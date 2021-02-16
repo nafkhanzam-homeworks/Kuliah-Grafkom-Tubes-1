@@ -1,13 +1,13 @@
-import {App} from "./app";
+import { App } from "./app";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 
 const gl = canvas.getContext("webgl");
 
-const app = new App(canvas, gl);
+const app = new App();
 
 const render = (time: number) => {
-  app.render(time);
+  app.render(canvas, gl);
   window.requestAnimationFrame(render);
 };
 
