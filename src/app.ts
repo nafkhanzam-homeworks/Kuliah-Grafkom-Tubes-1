@@ -1,8 +1,16 @@
-export class App {
-  constructor(
-    private canvas: HTMLCanvasElement,
-    private gl: WebGLRenderingContext,
-  ) {}
+import Line from "./shapes/line";
+import MultiColorTriangle from "./shapes/multicolortriangle";
+import ThreeLine from "./shapes/threeline";
 
-  public render(time: number) {}
+export class App {
+  constructor() {}
+
+  public render(canvas: HTMLCanvasElement, gl: WebGLRenderingContext) {
+    const triangle: MultiColorTriangle = new MultiColorTriangle(canvas, gl);
+    const threeLine: ThreeLine = new ThreeLine(canvas, gl);
+    const line: Line = new Line(canvas, gl);
+    // triangle.render();
+    // threeLine.render();
+    line.render();
+  }
 }
