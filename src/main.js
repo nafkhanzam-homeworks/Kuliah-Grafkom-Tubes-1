@@ -6,19 +6,19 @@ if (!gl) {
 }
 
 //prettier-ignore
-const matrix = [1, 0, 0, 0, 
-  0, 1, 0, 0, 
-  0, 0, 1, 0, 
+const matrix = [1, 0, 0, 0,
+  0, 1, 0, 0,
+  0, 0, 1, 0,
   10, 10, 10, 1];
 
 // vertexData = [...] x,y,z , x,y,z
 // prettier-ignore
-const vertexData = [0, 1, 0, 
-  1, -1, 0, 
+const vertexData = [0, 1, 0,
+  1, -1, 0,
   -1, -1, 0];
 // prettier-ignore
-const colorData = [1, 0, 0, 
-  0, 1, 0, 
+const colorData = [1, 0, 0,
+  0, 1, 0,
   0, 0, 1]; // rgb value
 
 // create buffer
@@ -49,7 +49,7 @@ void main() {
   vColor = color;
   gl_Position = vec4(position, 1);
 }
-`
+`,
 );
 gl.compileShader(vertexShader);
 
@@ -59,13 +59,13 @@ gl.shaderSource(
   fragmentShader,
   `
   precision mediump float;
-  
+
 varying vec3 vColor;
 
 void main() {
   gl_FragColor = vec4(vColor, 1);
 }
-`
+`,
 );
 gl.compileShader(fragmentShader);
 // create program
