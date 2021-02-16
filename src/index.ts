@@ -1,4 +1,4 @@
-import {App} from "./app";
+import { App } from "./app";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 
@@ -12,3 +12,12 @@ const render = (time: number) => {
 };
 
 window.requestAnimationFrame(render);
+
+function showHelp() {
+  alert("help");
+}
+
+const helpButton = document.getElementById("help") as HTMLButtonElement;
+helpButton.addEventListener("click", () => {
+  showHelp();
+});
