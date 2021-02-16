@@ -1,7 +1,7 @@
 import Shape from "./shape";
 
 class ThreeLine extends Shape {
-  render() {
+  render(): void {
     const gl = this.gl;
     const canvas = this.canvas;
 
@@ -30,49 +30,26 @@ class ThreeLine extends Shape {
     /*=================== Shaders ====================*/
 
     // Vertex shader source code
-    var vertCode =
+    this.createShader(
+      this.gl.VERTEX_SHADER,
       "attribute vec3 coordinates;" +
-      "void main(void) {" +
-      " gl_Position = vec4(coordinates, 1.0);" +
-      "}";
+        "void main(void) {" +
+        " gl_Position = vec4(coordinates, 1.0);" +
+        "}"
+    );
 
-    // Create a vertex shader object
-    var vertShader = gl.createShader(gl.VERTEX_SHADER);
-
-    // Attach vertex shader source code
-    gl.shaderSource(vertShader, vertCode);
-
-    // Compile the vertex shader
-    gl.compileShader(vertShader);
-
-    // Fragment shader source code
-    var fragCode =
-      "void main(void) {" + "gl_FragColor = vec4(0.0, 0.0, 0.0, 0.1);" + "}";
-
-    // Create fragment shader object
-    var fragShader = gl.createShader(gl.FRAGMENT_SHADER);
-
-    // Attach fragment shader source code
-    gl.shaderSource(fragShader, fragCode);
-
-    // Compile the fragmentt shader
-    gl.compileShader(fragShader);
+    this.createShader(
+      this.gl.FRAGMENT_SHADER,
+      "void main(void) {" + "gl_FragColor = vec4(1, 1, 1, 0.1);" + "}"
+    );
 
     // Create a shader program object to store
     // the combined shader program
-    var shaderProgram = gl.createProgram();
-
-    // Attach a vertex shader
-    gl.attachShader(shaderProgram, vertShader);
-
-    // Attach a fragment shader
-    gl.attachShader(shaderProgram, fragShader);
-
     // Link both the programs
-    gl.linkProgram(shaderProgram);
+    this.linkProgram();
 
     // Use the combined shader program object
-    gl.useProgram(shaderProgram);
+    gl.useProgram(this.program);
 
     /*======= Associating shaders to buffer objects ======*/
 
@@ -80,7 +57,7 @@ class ThreeLine extends Shape {
     gl.bindBuffer(gl.ARRAY_BUFFER, vertex_buffer);
 
     // Get the attribute location
-    var coord = gl.getAttribLocation(shaderProgram, "coordinates");
+    var coord = gl.getAttribLocation(this.program, "coordinates");
 
     // Point an attribute to the currently bound VBO
     gl.vertexAttribPointer(coord, 3, gl.FLOAT, false, 0, 0);
@@ -99,10 +76,7 @@ class ThreeLine extends Shape {
     // Clear the color and depth buffer
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // Set the view port
-    gl.viewport(0, 0, canvas.width, canvas.height);
-
-    // Draw the triangle
+    // Draw the lines
     gl.drawArrays(gl.LINES, 0, 6);
 
     // POINTS, LINE_STRIP, LINE_LOOP, LINES,

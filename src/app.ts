@@ -1,3 +1,4 @@
+import Line from "./shapes/line";
 import MultiColorTriangle from "./shapes/multicolortriangle";
 import ThreeLine from "./shapes/threeline";
 
@@ -7,7 +8,9 @@ export class App {
   public render(canvas: HTMLCanvasElement, gl: WebGLRenderingContext) {
     const triangle: MultiColorTriangle = new MultiColorTriangle(canvas, gl);
     const threeLine: ThreeLine = new ThreeLine(canvas, gl);
+    const line: Line = new Line(canvas, gl);
     // triangle.render();
-    threeLine.render();
+    // threeLine.render();
+    line.render();
   }
 }
