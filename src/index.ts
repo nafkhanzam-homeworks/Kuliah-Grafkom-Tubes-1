@@ -12,3 +12,12 @@ const render = (time: number) => {
 };
 
 window.requestAnimationFrame(render);
+
+function showHelp() {
+  alert("help");
+}
+
+const helpButton = document.getElementById("help") as HTMLButtonElement;
+helpButton.addEventListener("click", () => {
+  showHelp();
+});
