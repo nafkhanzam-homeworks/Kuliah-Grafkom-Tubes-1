@@ -29,3 +29,11 @@ type Shape =
 type AppInstance = {
   shapes: Shape[];
 };
+
+type MouseState = {
+  pos: {
+    x: number;
+    y: number;
+  };
+  pressing: boolean;
+};
