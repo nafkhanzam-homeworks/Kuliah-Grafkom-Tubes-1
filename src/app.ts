@@ -1,6 +1,6 @@
 import {Shape} from "./shape/shape";
 
-type Status = "FREE" | "SELECTING";
+type Status = "FREE" | "SELECT" | "LINE" | "SQUARE" | "POLYGON";
 
 export class App {
   private status: Status;
@@ -39,6 +39,10 @@ export class App {
     });
   }
 
+  public onStatusChange(newStatus: Status) {
+    this.status = newStatus;
+  }
+
   public render(time: number) {
     const {gl, canvas} = this;
     for (const shape of this.shapes) {
@@ -57,4 +61,6 @@ export class App {
   private onMouseUp(pos: Point) {
     this.mouseState.pressed.pos = null;
   }
+
+  public save() {}
 }
