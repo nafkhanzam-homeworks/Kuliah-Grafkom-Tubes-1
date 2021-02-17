@@ -1,3 +1,5 @@
+import {Shape} from "./shape/shape";
+
 type Status = "FREE" | "SELECTING";
 
 export class App {
@@ -31,7 +33,9 @@ export class App {
 
   public render(time: number) {
     const {gl, canvas} = this;
-    console.log(this.mouseState);
+    for (const shape of this.shapes) {
+      shape.render();
+    }
   }
 
   private onMouseMove(newPos: Point) {

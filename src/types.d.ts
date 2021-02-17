@@ -12,7 +12,7 @@ type Square = {
 
 type Polygon = Point[];
 
-type Shape =
+type ShapeInstance =
   | {
       type: "line";
       object: Line;
@@ -27,7 +27,7 @@ type Shape =
     };
 
 type AppInstance = {
-  shapes: Shape[];
+  shapes: ShapeInstance[];
 };
 
 type MouseState = {
