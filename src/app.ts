@@ -4,23 +4,29 @@ export class App {
   private status: Status;
   private shapes: Shape[];
   private mouseState: MouseState;
+  private canvasBound: DOMRect;
 
   constructor(private canvas: HTMLCanvasElement, private gl: WebGLRenderingContext) {
+    this.canvasBound = canvas.getBoundingClientRect();
     canvas.addEventListener(
       "mousemove",
       (event) => {
-        const bound = canvas.getBoundingClientRect();
-        const pos = {
-          x: event.clientX - bound.left,
-          y: event.clientY - bound.top,
-        };
-        this.onMouseEvent({
-          ...this.mouseState,
-          pos,
-        });
+        this.onMouseMove([
+          event.clientX - this.canvasBound.left,
+          event.clientY - this.canvasBound.top,
+        ]);
       },
       false,
     );
+    canvas.addEventListener("mousedown", (event) => {
+      this.onMouseClick([
+        event.clientX - this.canvasBound.left,
+        event.clientY - this.canvasBound.top,
+      ]);
+    });
+    canvas.addEventListener("mouseup", (event) => {
+      this.onMouseUp([event.clientX - this.canvasBound.left, event.clientY - this.canvasBound.top]);
+    });
   }
 
   public render(time: number) {
@@ -28,7 +34,15 @@ export class App {
     console.log(this.mouseState);
   }
 
-  public onMouseEvent(newState: MouseState) {
-    this.mouseState = newState;
+  private onMouseMove(newPos: Point) {
+    this.mouseState.pos = newPos;
+  }
+
+  private onMouseClick(pos: Point) {
+    this.mouseState.pressed.pos = pos;
+  }
+
+  private onMouseUp(pos: Point) {
+    this.mouseState.pressed.pos = null;
   }
 }
