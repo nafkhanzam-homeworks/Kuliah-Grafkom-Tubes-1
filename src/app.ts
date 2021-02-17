@@ -8,7 +8,15 @@ export class App {
   private mouseState: MouseState;
   private canvasBound: DOMRect;
 
-  constructor(private canvas: HTMLCanvasElement, private gl: WebGLRenderingContext) {
+  constructor(
+    private canvas: HTMLCanvasElement,
+    private gl: WebGLRenderingContext,
+    width: number,
+    height: number,
+  ) {
+    canvas.width = width;
+    canvas.height = height;
+    gl.viewport(0, 0, width, height);
     this.canvasBound = canvas.getBoundingClientRect();
     canvas.addEventListener(
       "mousemove",

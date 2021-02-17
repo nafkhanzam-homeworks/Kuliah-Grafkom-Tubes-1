@@ -4,7 +4,7 @@ const canvas = document.getElementById("app") as HTMLCanvasElement;
 
 const gl = canvas.getContext("webgl");
 
-const app = new App(canvas, gl);
+const app = new App(canvas, gl, 1080, 720);
 
 const render = (time: number) => {
   app.render(time);
