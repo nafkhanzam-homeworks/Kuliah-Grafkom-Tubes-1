@@ -7,21 +7,24 @@ const gl = canvas.getContext("webgl");
 const app = new App(canvas, gl, 1080, 720);
 
 const selectBtn = document.getElementById("select") as HTMLButtonElement;
-selectBtn.onclick(() => {
+selectBtn.onclick = () => {
   app.onStatusChange("SELECT");
-});
+};
+
 const lineBtn = document.getElementById("line") as HTMLButtonElement;
-lineBtn.onclick(() => {
+lineBtn.onclick = () => {
   app.onStatusChange("LINE");
-});
+};
+
 const squareBtn = document.getElementById("square") as HTMLButtonElement;
-squareBtn.onclick(() => {
+squareBtn.onclick = () => {
   app.onStatusChange("SQUARE");
-});
+};
+
 const polygonBtn = document.getElementById("polygon") as HTMLButtonElement;
-polygonBtn.onclick(() => {
+polygonBtn.onclick = () => {
   app.onStatusChange("POLYGON");
-});
+};
 
 const render = (time: number) => {
   app.render(time);
