@@ -4,7 +4,9 @@ const canvas = document.getElementById("app") as HTMLCanvasElement;
 
 const gl = canvas.getContext("webgl");
 
-const app = new App(canvas, gl, 1080, 720);
+const bgColor: Color = [1, 1, 1];
+const size = [1080, 720] as const;
+const app = new App(canvas, gl, ...size, bgColor);
 
 const selectBtn = document.getElementById("select") as HTMLButtonElement;
 selectBtn.onclick = () => {

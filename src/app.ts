@@ -1,6 +1,6 @@
 import {Shape} from "./shape/shape";
 
-type Status = "FREE" | "SELECT" | "LINE" | "SQUARE" | "POLYGON";
+type Status = "SELECT" | "LINE" | "SQUARE" | "POLYGON";
 
 export class App {
   private status: Status;
@@ -13,6 +13,7 @@ export class App {
     private gl: WebGLRenderingContext,
     width: number,
     height: number,
+    private backgroundColor: Color,
   ) {
     canvas.width = width;
     canvas.height = height;
@@ -21,22 +22,20 @@ export class App {
     canvas.addEventListener(
       "mousemove",
       (event) => {
-        this.onMouseMove([
-          event.clientX - this.canvasBound.left,
-          event.clientY - this.canvasBound.top,
-        ]);
+        this.onMouseMove(this.getMousePoint(event));
       },
       false,
     );
     canvas.addEventListener("mousedown", (event) => {
-      this.onMouseClick([
-        event.clientX - this.canvasBound.left,
-        event.clientY - this.canvasBound.top,
-      ]);
+      this.onMouseClick(this.getMousePoint(event));
     });
     canvas.addEventListener("mouseup", (event) => {
-      this.onMouseUp([event.clientX - this.canvasBound.left, event.clientY - this.canvasBound.top]);
+      this.onMouseUp(this.getMousePoint(event));
     });
+  }
+
+  private getMousePoint(event: MouseEvent): Point {
+    return [event.clientX - this.canvasBound.left, event.clientY - this.canvasBound.top];
   }
 
   public onStatusChange(newStatus: Status) {
@@ -45,6 +44,10 @@ export class App {
 
   public render(time: number) {
     const {gl, canvas} = this;
+
+    gl.clearColor(...this.backgroundColor, 1);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
     for (const shape of this.shapes) {
       shape.render();
     }
