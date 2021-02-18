@@ -1,12 +1,24 @@
 import {App} from "./app";
+import {Polygon} from "./shape/polygon";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 
-const gl = canvas.getContext("webgl");
+const gl = canvas.getContext("webgl2");
+if (!gl) {
+  throw new Error("WebGL2 context is null!");
+}
 
 const bgColor: Color = [1, 1, 1];
 const size = [1080, 720] as const;
 const app = new App(canvas, gl, ...size, bgColor);
+
+const polygon = new Polygon(canvas, gl, [1, 0, 0]);
+polygon.addPoint([1, 0.75]);
+polygon.addPoint([0.75, -1]);
+// polygon.addPoint([0.5, 0.5]);
+polygon.addPoint([-1, -0.75]);
+polygon.addPoint([-0.75, 1]);
+app.addShape(polygon);
 
 const selectBtn = document.getElementById("select") as HTMLButtonElement;
 selectBtn.onclick = () => {

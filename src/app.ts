@@ -3,9 +3,14 @@ import {Shape} from "./shape/shape";
 type Status = "SELECT" | "LINE" | "SQUARE" | "POLYGON";
 
 export class App {
-  private status: Status;
-  private shapes: Shape[];
-  private mouseState: MouseState;
+  private status: Status = "SELECT";
+  private shapes: Shape[] = [];
+  private mouseState: MouseState = {
+    pos: [0, 0],
+    pressed: {
+      pos: null,
+    },
+  };
   private canvasBound: DOMRect;
 
   constructor(
@@ -63,6 +68,10 @@ export class App {
 
   private onMouseUp(pos: Point) {
     this.mouseState.pressed.pos = null;
+  }
+
+  public addShape(shape: Shape) {
+    this.shapes.push(shape);
   }
 
   public save() {}

@@ -1,3 +1,6 @@
+type AbstractConstructorHelper<T> = (new (...args: any) => {[x: string]: any}) & T;
+type AbstractContructorParameters<T> = ConstructorParameters<AbstractConstructorHelper<T>>;
+
 type Point = [number, number];
 type Color = [number, number, number];
 
