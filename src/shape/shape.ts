@@ -2,7 +2,11 @@
 export abstract class Shape {
   protected program: WebGLProgram;
 
-  constructor(protected canvas: HTMLCanvasElement, protected gl: WebGLRenderingContext) {
+  constructor(
+    protected canvas: HTMLCanvasElement,
+    protected gl: WebGLRenderingContext,
+    protected color: Color,
+  ) {
     this.program = gl.createProgram();
   }
 
