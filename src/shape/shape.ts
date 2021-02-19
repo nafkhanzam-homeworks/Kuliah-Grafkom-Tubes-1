@@ -1,13 +1,12 @@
 import {constants} from "../constants";
-
-let UNIQUE_ID = 0;
+import {createId} from "./id";
 
 // base abstract class
 export abstract class Shape {
   protected program: WebGLProgram;
-  protected points: Point[] = [];
+  protected points: {id: number; point: Point}[] = [];
   protected selected: boolean = false;
-  protected id: number = ++UNIQUE_ID;
+  protected id: number = createId();
 
   constructor(
     protected canvas: HTMLCanvasElement,
@@ -49,8 +48,6 @@ export abstract class Shape {
   }
 
   render() {
-    this.renderFill();
-
     if (this.selected) {
       this.renderSelected();
       this.renderPoints();
@@ -103,21 +100,14 @@ export abstract class Shape {
     gl.uniform3fv(colorPointer, new Float32Array(color));
   }
 
-  protected renderFill() {
-    const {gl} = this;
-
-    const points = this.points.flat();
-    this.createArrayBuffer(points, constants.pointSize);
-
-    this.applyColor(this.color);
-
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, this.points.length);
+  protected flatPoints() {
+    return this.points.map((v) => v.point).flat();
   }
 
   protected renderPoints() {
     const {gl} = this;
 
-    const points = this.points.flat();
+    const points = this.flatPoints();
     this.createArrayBuffer(points, constants.pointSize);
 
     this.applyColor(constants.selectedPointColor);
@@ -128,7 +118,7 @@ export abstract class Shape {
   protected renderSelected() {
     const {gl} = this;
 
-    const points = this.points.flat();
+    const points = this.flatPoints();
     this.createArrayBuffer(points, constants.pointSize);
 
     gl.lineWidth(3);
