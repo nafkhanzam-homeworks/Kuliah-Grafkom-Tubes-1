@@ -187,10 +187,8 @@ export class App {
 
     const pixelX = pos[0]; // (pos[0] / canvas.width) * 2 - 1;
     const pixelY = canvas.height - pos[1]; // ((canvas.height - pos[1]) / canvas.height) * 2 - 1;
-    console.log(pixelX, pixelY);
     const data = new Uint8Array(4);
     gl.readPixels(pixelX, pixelY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data);
-    // console.log(data);
     this.data = data;
     const id = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
     return id;
@@ -215,8 +213,6 @@ export class App {
       shape.setSelected(false);
     }
     const clickedId = this.mouseState.shapeId;
-    console.log(this.data);
-    console.log(clickedId);
     const clickedShape: Shape | undefined = this.shapes.filter((v) => v.getId() === clickedId)[0];
     if (clickedShape) {
       clickedShape.setSelected(true);
