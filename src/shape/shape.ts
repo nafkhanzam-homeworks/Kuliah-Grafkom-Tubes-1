@@ -1,10 +1,13 @@
 import {constants} from "../constants";
 
+let UNIQUE_ID = 0;
+
 // base abstract class
 export abstract class Shape {
   protected program: WebGLProgram;
   protected points: Point[] = [];
   protected selected: boolean = false;
+  protected id: number = ++UNIQUE_ID;
 
   constructor(
     protected canvas: HTMLCanvasElement,
@@ -128,7 +131,24 @@ export abstract class Shape {
     gl.drawArrays(gl.LINE_LOOP, 0, this.points.length);
   }
 
-  onMouseMove(state: MouseState) {}
+  setSelected(value: boolean) {
+    this.selected = value;
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  onMouseMove(state: MouseState) {
+    if (state.pressed.pos) {
+      const dx = state.pos[0] - state.bef[0];
+      const dy = state.pos[1] - state.bef[1];
+      for (let i = 0; i < this.points.length; ++i) {
+        this.points[i][0] += dx / this.canvas.width;
+        this.points[i][1] -= dy / this.canvas.height;
+      }
+    }
+  }
 
   onMouseClick(state: MouseState) {}
 

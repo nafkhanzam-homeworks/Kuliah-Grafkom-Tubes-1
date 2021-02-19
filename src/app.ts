@@ -6,6 +6,7 @@ export class App {
   private status: Status = "SELECT";
   private shapes: Shape[] = [];
   private mouseState: MouseState = {
+    bef: [0, 0],
     pos: [0, 0],
     pressed: {
       pos: null,
@@ -58,7 +59,23 @@ export class App {
     }
   }
 
+  private getPixelId(pos: Point) {
+    const {gl, canvas} = this;
+
+    const pixelX = (pos[0] * gl.canvas.width) / canvas.clientWidth;
+    const pixelY = gl.canvas.height - (pos[1] * gl.canvas.height) / canvas.clientHeight - 1;
+    const data = new Uint8Array(4);
+    gl.readPixels(pixelX, pixelY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data);
+    const id = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
+    return id;
+  }
+
   private onMouseMove(newPos: Point) {
+    const el = document.getElementById("coord");
+    if (el) {
+      el.innerText = JSON.stringify(newPos);
+    }
+    this.mouseState.bef = this.mouseState.pos;
     this.mouseState.pos = newPos;
     for (const shape of this.shapes) {
       shape.onMouseMove(this.mouseState);
@@ -69,6 +86,13 @@ export class App {
     this.mouseState.pressed.pos = pos;
     for (const shape of this.shapes) {
       shape.onMouseClick(this.mouseState);
+      shape.setSelected(false);
+    }
+    const clickedId = this.getPixelId(pos);
+    console.log(clickedId);
+    const clickedShape: Shape | undefined = this.shapes.filter((v) => v.getId() === clickedId)[0];
+    if (clickedShape) {
+      clickedShape.setSelected(true);
     }
   }
 

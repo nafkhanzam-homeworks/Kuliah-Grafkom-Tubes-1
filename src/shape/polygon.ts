@@ -5,10 +5,10 @@ export class Polygon extends Shape {
   render() {
     this.renderFill();
 
-    // if (this.selected) {
-    this.renderSelected();
-    this.renderPoints();
-    // }
+    if (this.selected) {
+      this.renderSelected();
+      this.renderPoints();
+    }
   }
 
   addPoint(p: Point) {

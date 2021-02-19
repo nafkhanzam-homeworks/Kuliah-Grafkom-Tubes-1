@@ -15,7 +15,7 @@ const app = new App(canvas, gl, ...size, bgColor);
 const polygon = new Polygon(canvas, gl, [1, 0, 0]);
 polygon.addPoint([1, 0.75]);
 polygon.addPoint([0.75, -1]);
-polygon.addPoint([0.5, 0.5]);
+// polygon.addPoint([0.5, 0.5]);
 polygon.addPoint([-1, -0.75]);
 polygon.addPoint([-0.75, 1]);
 app.addShape(polygon);

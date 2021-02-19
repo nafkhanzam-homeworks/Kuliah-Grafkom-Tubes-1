@@ -40,6 +40,7 @@ type AppInstance = {
 };
 
 type MouseState = {
+  bef: Point;
   pos: Point;
   pressed: {
     pos: Point | null;
