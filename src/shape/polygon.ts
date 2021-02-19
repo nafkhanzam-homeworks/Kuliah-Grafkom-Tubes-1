@@ -1,21 +1,27 @@
 import {constants} from "../constants";
-import {createId} from "./id";
 import {Shape} from "./shape";
 
 export class Polygon extends Shape {
-  renderFill() {
+  renderHitbox(hitboxProgram: WebGLProgram): void {
     const {gl} = this;
 
     const points = this.flatPoints();
-    this.createArrayBuffer(points, constants.pointSize);
+    this.createArrayBuffer(hitboxProgram, points, constants.pointSize);
 
-    this.applyColor(this.color);
+    const dataPointer = gl.getUniformLocation(hitboxProgram, "dataId");
+    gl.uniform4fv(dataPointer, new Float32Array(this.dataId));
 
     gl.drawArrays(gl.TRIANGLE_FAN, 0, this.points.length);
   }
 
-  render() {
-    this.renderFill();
-    super.render();
+  protected renderShape() {
+    const {gl, program} = this;
+
+    const points = this.flatPoints();
+    this.createArrayBuffer(program, points, constants.pointSize);
+
+    this.applyColor(program, this.color);
+
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, this.points.length);
   }
 }

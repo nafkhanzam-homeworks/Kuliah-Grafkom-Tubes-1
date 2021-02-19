@@ -45,4 +45,5 @@ type MouseState = {
   pressed: {
     pos: Point | null;
   };
+  shapeId: number;
 };

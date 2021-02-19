@@ -7,47 +7,73 @@ export abstract class Shape {
   protected points: {id: number; point: Point}[] = [];
   protected selected: boolean = false;
   protected id: number = createId();
+  protected dataId: [number, number, number, number];
 
   constructor(
     protected canvas: HTMLCanvasElement,
     protected gl: WebGL2RenderingContext,
     protected color: Color,
   ) {
+    const id = this.id;
+    this.dataId = [
+      ((id >> 0) & 0xff) / 0xff,
+      ((id >> 8) & 0xff) / 0xff,
+      ((id >> 16) & 0xff) / 0xff,
+      ((id >> 24) & 0xff) / 0xff,
+    ];
     const program = gl.createProgram();
     if (!program) {
       throw new Error("Failed when creating program!");
     }
     this.program = program;
-    this.createShader(
-      this.gl.VERTEX_SHADER,
-      `
-      precision mediump float;
-
-      attribute vec2 position;
-
-      void main() {
-        gl_Position = vec4(position, 0, 1);
-      }
-    `,
-    );
-
-    this.createShader(
-      this.gl.FRAGMENT_SHADER,
-      `
-      precision mediump float;
-
-      uniform vec3 color;
-
-      void main() {
-        gl_FragColor = vec4(color, 1);
-      }
-      `,
-    );
-    this.linkProgram();
-    this.useProgram();
+    this.initMainShader();
   }
 
+  private initMainShader() {
+    const {gl, program} = this;
+    gl.attachShader(
+      program,
+      this.createShader(
+        gl.VERTEX_SHADER,
+        `
+          precision mediump float;
+
+          attribute vec2 position;
+
+          void main() {
+            gl_Position = vec4(position, 0, 1);
+          }
+        `,
+      ),
+    );
+
+    gl.attachShader(
+      program,
+      this.createShader(
+        gl.FRAGMENT_SHADER,
+        `
+          precision mediump float;
+
+          uniform vec3 color;
+
+          void main() {
+            gl_FragColor = vec4(color, 1);
+          }
+        `,
+      ),
+    );
+
+    gl.linkProgram(program);
+  }
+
+  abstract renderHitbox(hitboxProgram: WebGLProgram): void;
+  protected abstract renderShape(): void;
+
   render() {
+    const {gl, program} = this;
+
+    gl.useProgram(program);
+    this.renderShape();
     if (this.selected) {
       this.renderSelected();
       this.renderPoints();
@@ -65,27 +91,17 @@ export abstract class Shape {
       source,
     );
     this.gl.compileShader(shader);
-    // attach shader to the program
-    this.gl.attachShader(this.program, shader);
     return shader;
   }
 
-  protected linkProgram() {
-    this.gl.linkProgram(this.program);
-  }
-
-  protected useProgram() {
-    this.gl.useProgram(this.program);
-  }
-
-  protected createArrayBuffer(data: number[], size: number) {
+  protected createArrayBuffer(program: WebGLProgram, data: number[], size: number) {
     const {gl} = this;
 
     const positionBufferPointer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBufferPointer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
 
-    const positionPointer = gl.getAttribLocation(this.program, "position");
+    const positionPointer = gl.getAttribLocation(program, "position");
     gl.enableVertexAttribArray(positionPointer);
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBufferPointer);
     gl.vertexAttribPointer(positionPointer, size, gl.FLOAT, false, 0, 0);
@@ -93,10 +109,10 @@ export abstract class Shape {
     return positionBufferPointer;
   }
 
-  protected applyColor(color: Color) {
+  protected applyColor(program: WebGLProgram, color: Color) {
     const {gl} = this;
 
-    const colorPointer = gl.getUniformLocation(this.program, "color");
+    const colorPointer = gl.getUniformLocation(program, "color");
     gl.uniform3fv(colorPointer, new Float32Array(color));
   }
 
@@ -105,27 +121,35 @@ export abstract class Shape {
   }
 
   protected renderPoints() {
-    const {gl} = this;
+    const {gl, program} = this;
 
     const points = this.flatPoints();
-    this.createArrayBuffer(points, constants.pointSize);
+    this.createArrayBuffer(program, points, constants.pointSize);
 
-    this.applyColor(constants.selectedPointColor);
+    this.applyColor(program, constants.selectedPointColor);
 
     gl.drawArrays(gl.POINTS, 0, this.points.length);
   }
 
   protected renderSelected() {
-    const {gl} = this;
+    const {gl, program} = this;
 
     const points = this.flatPoints();
-    this.createArrayBuffer(points, constants.pointSize);
+    this.createArrayBuffer(program, points, constants.pointSize);
 
     gl.lineWidth(3);
 
-    this.applyColor(constants.selectedColor);
+    this.applyColor(program, constants.selectedColor);
 
     gl.drawArrays(gl.LINE_LOOP, 0, this.points.length);
+  }
+
+  setColor(color: Color) {
+    this.color = color;
+  }
+
+  getColor() {
+    return this.color;
   }
 
   addPoint(p: Point) {

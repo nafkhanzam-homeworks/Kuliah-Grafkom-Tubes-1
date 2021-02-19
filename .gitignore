@@ -28,3 +28,5 @@ dist/
 # custom
 *.pdf
 *.txt
+
+/src/test.glsl
