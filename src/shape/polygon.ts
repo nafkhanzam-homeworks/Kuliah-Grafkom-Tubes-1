@@ -18,12 +18,4 @@ export class Polygon extends Shape {
     this.renderFill();
     super.render();
   }
-
-  addPoint(p: Point) {
-    this.points.push({id: createId(), point: p});
-  }
-
-  updatePoint(index: number, p: Point) {
-    this.points[index].point = p;
-  }
 }

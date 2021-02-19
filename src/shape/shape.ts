@@ -128,6 +128,14 @@ export abstract class Shape {
     gl.drawArrays(gl.LINE_LOOP, 0, this.points.length);
   }
 
+  addPoint(p: Point) {
+    this.points.push({id: createId(), point: p});
+  }
+
+  updatePoint(index: number, p: Point) {
+    this.points[index].point = p;
+  }
+
   setSelected(value: boolean) {
     this.selected = value;
   }
