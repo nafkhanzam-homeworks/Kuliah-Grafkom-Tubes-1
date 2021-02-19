@@ -60,14 +60,23 @@ export class App {
 
   private onMouseMove(newPos: Point) {
     this.mouseState.pos = newPos;
+    for (const shape of this.shapes) {
+      shape.onMouseMove(this.mouseState);
+    }
   }
 
   private onMouseClick(pos: Point) {
     this.mouseState.pressed.pos = pos;
+    for (const shape of this.shapes) {
+      shape.onMouseClick(this.mouseState);
+    }
   }
 
   private onMouseUp(pos: Point) {
     this.mouseState.pressed.pos = null;
+    for (const shape of this.shapes) {
+      shape.onMouseUp(this.mouseState, pos);
+    }
   }
 
   public addShape(shape: Shape) {

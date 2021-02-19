@@ -121,8 +121,16 @@ export abstract class Shape {
     const points = this.points.flat();
     this.createArrayBuffer(points, constants.pointSize);
 
+    gl.lineWidth(3);
+
     this.applyColor(constants.selectedColor);
 
     gl.drawArrays(gl.LINE_LOOP, 0, this.points.length);
   }
+
+  onMouseMove(state: MouseState) {}
+
+  onMouseClick(state: MouseState) {}
+
+  onMouseUp(state: MouseState, pos: Point) {}
 }
