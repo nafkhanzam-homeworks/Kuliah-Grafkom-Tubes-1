@@ -3,6 +3,8 @@ import {constants} from "../constants";
 // base abstract class
 export abstract class Shape {
   protected program: WebGLProgram;
+  protected points: Point[] = [];
+  protected selected: boolean = false;
 
   constructor(
     protected canvas: HTMLCanvasElement,
@@ -84,10 +86,43 @@ export abstract class Shape {
     return positionBufferPointer;
   }
 
-  protected applyColor() {
+  protected applyColor(color: Color) {
     const {gl} = this;
 
     const colorPointer = gl.getUniformLocation(this.program, "color");
-    gl.uniform3fv(colorPointer, new Float32Array(this.color));
+    gl.uniform3fv(colorPointer, new Float32Array(color));
+  }
+
+  protected renderFill() {
+    const {gl} = this;
+
+    const points = this.points.flat();
+    this.createArrayBuffer(points, constants.pointSize);
+
+    this.applyColor(this.color);
+
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, this.points.length);
+  }
+
+  protected renderPoints() {
+    const {gl} = this;
+
+    const points = this.points.flat();
+    this.createArrayBuffer(points, constants.pointSize);
+
+    this.applyColor(constants.selectedPointColor);
+
+    gl.drawArrays(gl.POINTS, 0, this.points.length);
+  }
+
+  protected renderSelected() {
+    const {gl} = this;
+
+    const points = this.points.flat();
+    this.createArrayBuffer(points, constants.pointSize);
+
+    this.applyColor(constants.selectedColor);
+
+    gl.drawArrays(gl.LINE_LOOP, 0, this.points.length);
   }
 }

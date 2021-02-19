@@ -2,18 +2,13 @@ import {constants} from "../constants";
 import {Shape} from "./shape";
 
 export class Polygon extends Shape {
-  private points: Point[] = [];
-  private selected: boolean = false;
-
   render() {
-    const {gl} = this;
+    this.renderFill();
 
-    const points = this.points.flat();
-
-    this.createArrayBuffer(points, constants.pointSize);
-    this.applyColor();
-
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, points.length);
+    // if (this.selected) {
+    this.renderSelected();
+    this.renderPoints();
+    // }
   }
 
   addPoint(p: Point) {
