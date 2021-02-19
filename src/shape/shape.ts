@@ -137,7 +137,7 @@ export abstract class Shape {
     const points = this.flatPoints();
     this.createArrayBuffer(program, points, constants.pointSize);
 
-    gl.lineWidth(3);
+    gl.lineWidth(6);
 
     this.applyColor(program, constants.selectedColor);
 
