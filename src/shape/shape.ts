@@ -141,8 +141,8 @@ export abstract class Shape {
       const dx = state.pos[0] - state.bef[0];
       const dy = state.pos[1] - state.bef[1];
       for (let i = 0; i < this.points.length; ++i) {
-        this.points[i][0] += dx / this.canvas.width;
-        this.points[i][1] -= dy / this.canvas.height;
+        this.points[i].point[0] += (dx / this.canvas.width) * 2;
+        this.points[i].point[1] -= (dy / this.canvas.height) * 2;
       }
     }
   }
