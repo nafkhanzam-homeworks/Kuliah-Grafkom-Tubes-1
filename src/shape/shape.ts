@@ -48,7 +48,14 @@ export abstract class Shape {
     this.useProgram();
   }
 
-  abstract render(): void;
+  render() {
+    this.renderFill();
+
+    if (this.selected) {
+      this.renderSelected();
+      this.renderPoints();
+    }
+  }
 
   protected createShader(shaderType: number, source: string): WebGLShader {
     const shader = this.gl.createShader(shaderType);

@@ -1,14 +1,8 @@
-import {constants} from "../constants";
 import {Shape} from "./shape";
 
 export class Polygon extends Shape {
   render() {
-    this.renderFill();
-
-    if (this.selected) {
-      this.renderSelected();
-      this.renderPoints();
-    }
+    super.render();
   }
 
   addPoint(p: Point) {
