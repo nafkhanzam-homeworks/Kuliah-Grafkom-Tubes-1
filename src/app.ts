@@ -150,7 +150,7 @@ export class App {
   }
 
   private getMousePoint(event: MouseEvent): Point {
-    return [event.clientX - this.canvasBound.left, event.clientY - this.canvasBound.top];
+    return [event.pageX - this.canvasBound.left, event.pageY - this.canvasBound.top];
   }
 
   public onStatusChange(newStatus: Status) {
