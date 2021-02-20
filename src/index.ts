@@ -1,5 +1,6 @@
 import {App} from "./app";
 import {Polygon} from "./shape/polygon";
+import {Shape} from "./shape/shape";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 
@@ -10,7 +11,9 @@ if (!gl) {
 
 const bgColor: Color = [1, 1, 1];
 const size = [720, 720] as const;
-const app = new App(canvas, gl, ...size, bgColor);
+
+const newApp = () => new App(canvas, gl, ...size, bgColor);
+let app = newApp();
 
 const polygon = new Polygon(canvas, gl, [1, 0, 0]);
 polygon.addPoint([1, 0.75]);
@@ -74,12 +77,26 @@ helpButton.addEventListener("click", () => {
   showHelp();
 });
 
-function loadApp(appInstance: AppInstance) {
+const loadApp = (appInstance: AppInstance) => {
   try {
+    const loadedApp = newApp();
+    const {shapes} = appInstance;
+    for (const shape of shapes.reverse()) {
+      let res: Shape | null = null;
+      if (shape.type === "polygon") {
+        res = Polygon.load(canvas, gl, shape.object);
+      } else if (shape.type === "line") {
+      } else if (shape.type === "square") {
+      }
+      if (res) {
+        loadedApp.addShape(res);
+      }
+    }
+    app = loadedApp;
   } catch (error) {
     alert(error);
   }
-}
+};
 
 let file: File | null = null;
 const fileInput = document.getElementById("file") as HTMLInputElement;

@@ -2,6 +2,18 @@ import {constants} from "../constants";
 import {Shape} from "./shape";
 
 export class Polygon extends Shape {
+  static load(
+    canvas: HTMLCanvasElement,
+    gl: WebGL2RenderingContext,
+    instance: PolygonInstance,
+  ): Polygon {
+    const polygon = new Polygon(canvas, gl, instance.color);
+    for (const point of instance.points) {
+      polygon.addPoint(point);
+    }
+    return polygon;
+  }
+
   renderHitboxShape(hitboxProgram: WebGLProgram): void {
     const {gl} = this;
 
