@@ -1,5 +1,5 @@
 import {constants} from "../constants";
-import {createId} from "./id";
+import {createId, toDataId} from "./id";
 
 // base abstract class
 export abstract class Shape {
@@ -58,16 +58,29 @@ export abstract class Shape {
     gl.linkProgram(program);
   }
 
-  abstract renderHitbox(hitboxProgram: WebGLProgram): void;
-  protected abstract renderShape(): void;
+  protected assignDataId(id: number, hitboxProgram: WebGLProgram) {
+    const {gl} = this;
+    const dataPointer = gl.getUniformLocation(hitboxProgram, "dataId");
+    gl.uniform4fv(dataPointer, new Float32Array(toDataId(id)));
+  }
 
+  abstract renderHitboxShape(hitboxProgram: WebGLProgram): void;
+  renderHitbox(hitboxProgram: WebGLProgram) {
+    if (this.selected) {
+      this.renderPoints(hitboxProgram, true);
+      this.renderSelected(hitboxProgram);
+    }
+    this.renderHitboxShape(hitboxProgram);
+  }
+
+  protected abstract renderShape(): void;
   render() {
     const {gl, program} = this;
 
     gl.useProgram(program);
     if (this.selected) {
-      this.renderPoints();
-      this.renderSelected();
+      this.renderPoints(program);
+      this.renderSelected(program);
     }
     this.renderShape();
   }
@@ -112,10 +125,11 @@ export abstract class Shape {
     return this.points.map((v) => v.point).flat();
   }
 
-  protected renderPoints() {
-    const {gl, program} = this;
+  protected renderPoints(program: WebGLProgram, assignId: boolean = false) {
+    const {gl} = this;
 
     const size = 0.025;
+    const count = 6;
 
     const points = this.points
       .map(({point: v}) => {
@@ -140,13 +154,21 @@ export abstract class Shape {
 
     gl.lineWidth(6);
 
-    this.applyColor(program, constants.selectedPointColor);
+    if (!assignId) {
+      this.applyColor(program, constants.selectedPointColor);
+    }
 
-    gl.drawArrays(gl.TRIANGLES, 0, points.length / constants.pointSize);
+    for (let i = 0; i < this.points.length; ++i) {
+      const p = this.points[i];
+      if (assignId) {
+        this.assignDataId(p.id, program);
+      }
+      gl.drawArrays(gl.TRIANGLES, i * count, count);
+    }
   }
 
-  protected renderSelected() {
-    const {gl, program} = this;
+  protected renderSelected(program: WebGLProgram) {
+    const {gl} = this;
 
     const points = this.flatPoints();
     this.createArrayBuffer(program, points, constants.pointSize);
@@ -188,17 +210,17 @@ export abstract class Shape {
 
   onMouseMove(state: MouseState) {
     const id = state.shapeId;
+    const dx = ((state.pos[0] - state.bef[0]) / this.canvas.width) * 2;
+    const dy = (-(state.pos[1] - state.bef[1]) / this.canvas.height) * 2;
     if (id === this.id) {
-      const dx = state.pos[0] - state.bef[0];
-      const dy = state.pos[1] - state.bef[1];
       for (let i = 0; i < this.points.length; ++i) {
-        this.points[i].point[0] += (dx / this.canvas.width) * 2;
-        this.points[i].point[1] -= (dy / this.canvas.height) * 2;
+        this.points[i].point[0] += dx;
+        this.points[i].point[1] += dy;
       }
     } else {
-      const index = this.points.findIndex((v) => v.id === id);
-      if (index >= 0 && index < this.points.length) {
-        this.updatePoint(index, state.pos);
+      const i = this.points.findIndex((v) => v.id === id);
+      if (i >= 0 && i < this.points.length) {
+        this.updatePoint(i, [this.points[i].point[0] + dx, this.points[i].point[1] + dy]);
       }
     }
   }
