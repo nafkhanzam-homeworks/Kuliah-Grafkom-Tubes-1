@@ -37,4 +37,11 @@ export class Polygon extends Shape {
     const pos = this.drawingPoint || state.pos;
     this.addPoint(pos);
   }
+
+  getDataInstance(): PolygonInstance {
+    return {
+      color: this.color,
+      points: this.points.map((v) => v.point),
+    };
+  }
 }

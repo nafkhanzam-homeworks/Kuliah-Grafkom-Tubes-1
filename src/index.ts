@@ -74,7 +74,7 @@ helpButton.addEventListener("click", () => {
   showHelp();
 });
 
-function loadApp(content: any) {
+function loadApp(appInstance: AppInstance) {
   try {
   } catch (error) {
     alert(error);
@@ -118,7 +118,5 @@ function download(filename: string, content: string) {
 
 const saveButton = document.getElementById("save") as HTMLButtonElement;
 saveButton.onclick = () => {
-  const data: ShapeInstance;
-
-  download("cad-data.json", JSON.stringify(data));
+  download("cad-data.json", JSON.stringify(app.getDataInstance()));
 };

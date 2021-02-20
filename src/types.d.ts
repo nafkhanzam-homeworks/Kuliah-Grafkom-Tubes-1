@@ -4,19 +4,19 @@ type AbstractContructorParameters<T> = ConstructorParameters<AbstractConstructor
 type Point = [number, number];
 type Color = [number, number, number];
 
-type Line = {
+type LineInstance = {
   p0: Point;
   p1: Point;
   color: Color;
 };
 
-type Square = {
+type SquareInstance = {
   p: Point;
   size: number;
   color: Color;
 };
 
-type Polygon = {
+type PolygonInstance = {
   points: Point[];
   color: Color;
 };
@@ -24,15 +24,15 @@ type Polygon = {
 type ShapeInstance =
   | {
       type: "line";
-      object: Line;
+      object: LineInstance;
     }
   | {
       type: "square";
-      object: Square;
+      object: SquareInstance;
     }
   | {
       type: "polygon";
-      object: Polygon;
+      object: PolygonInstance;
     };
 
 type AppInstance = {

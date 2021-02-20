@@ -280,6 +280,28 @@ export class App {
     }
     return null;
   }
+
+  getDataInstance(): AppInstance {
+    return {
+      shapes: this.shapes.map((shape) => {
+        const res = mapToTypeInstance(shape);
+        if (!res) {
+          throw new Error("Can't identify shape type!");
+        }
+        return res;
+      }),
+    };
+  }
 }
+
+const mapToTypeInstance = (shape: Shape): ShapeInstance | null => {
+  if (shape instanceof Polygon) {
+    return {
+      type: "polygon",
+      object: shape.getDataInstance(),
+    };
+  }
+  return null;
+};
 
 const randColor = (): Color => [Math.random(), Math.random(), Math.random()];
