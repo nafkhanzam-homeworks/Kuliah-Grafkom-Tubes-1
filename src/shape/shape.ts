@@ -187,12 +187,18 @@ export abstract class Shape {
   }
 
   onMouseMove(state: MouseState) {
-    if (state.pressed.pos) {
+    const id = state.shapeId;
+    if (id === this.id) {
       const dx = state.pos[0] - state.bef[0];
       const dy = state.pos[1] - state.bef[1];
       for (let i = 0; i < this.points.length; ++i) {
         this.points[i].point[0] += (dx / this.canvas.width) * 2;
         this.points[i].point[1] -= (dy / this.canvas.height) * 2;
+      }
+    } else {
+      const index = this.points.findIndex((v) => v.id === id);
+      if (index >= 0 && index < this.points.length) {
+        this.updatePoint(index, state.pos);
       }
     }
   }
