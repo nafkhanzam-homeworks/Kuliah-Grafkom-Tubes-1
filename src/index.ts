@@ -73,3 +73,52 @@ const helpButton = document.getElementById("help") as HTMLButtonElement;
 helpButton.addEventListener("click", () => {
   showHelp();
 });
+
+function loadApp(content: any) {
+  try {
+  } catch (error) {
+    alert(error);
+  }
+}
+
+let file: File | null = null;
+const fileInput = document.getElementById("file") as HTMLInputElement;
+fileInput.onchange = () => {
+  file = fileInput.files?.item(0) ?? null;
+};
+
+const loadButton = document.getElementById("load") as HTMLButtonElement;
+loadButton.onclick = () => {
+  if (!file) {
+    alert("Belum ada file yang dipilih");
+    return;
+  }
+  const reader = new FileReader();
+  reader.addEventListener("load", (event) => {
+    const result = event.target?.result;
+    if (typeof result === "string") {
+      loadApp(JSON.parse(result));
+    }
+  });
+  reader.readAsText(file);
+};
+
+function download(filename: string, content: string) {
+  var element = document.createElement("a");
+  element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(content));
+  element.setAttribute("download", filename);
+
+  element.style.display = "none";
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+const saveButton = document.getElementById("save") as HTMLButtonElement;
+saveButton.onclick = () => {
+  const data: ShapeInstance;
+
+  download("cad-data.json", JSON.stringify(data));
+};
