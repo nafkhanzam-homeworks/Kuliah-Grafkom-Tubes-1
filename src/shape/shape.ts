@@ -5,6 +5,7 @@ import {createId, toDataId} from "./id";
 export abstract class Shape {
   protected program: WebGLProgram;
   protected points: {id: number; point: Point}[] = [];
+  protected drawingPoint: Point | null = null;
   protected id: number = createId();
 
   constructor(
@@ -77,7 +78,7 @@ export abstract class Shape {
     const {gl, program} = this;
 
     gl.useProgram(program);
-    if (selected) {
+    if (selected || this.drawingPoint) {
       this.renderPoints(program);
       this.renderSelected(program);
     }
@@ -179,6 +180,10 @@ export abstract class Shape {
     gl.drawArrays(gl.LINE_LOOP, 0, this.points.length);
   }
 
+  setDrawingPoint(p: Point | null) {
+    this.drawingPoint = p;
+  }
+
   containsId(id: number) {
     return [this.id, ...this.points.map((v) => v.id)].includes(id);
   }
@@ -203,7 +208,7 @@ export abstract class Shape {
     return this.id;
   }
 
-  onMouseMove(state: MouseState) {
+  onSelectedMouseMove(state: MouseState) {
     const id = state.shapeId;
     const dx = ((state.pos[0] - state.bef[0]) / this.canvas.width) * 2;
     const dy = (-(state.pos[1] - state.bef[1]) / this.canvas.height) * 2;
@@ -220,7 +225,17 @@ export abstract class Shape {
     }
   }
 
+  private toScaledPoint(point: Point): Point {
+    const x = (point[0] / this.canvas.width) * 2 - 1;
+    const y = (point[1] / this.canvas.height) * 2 - 1;
+    return [x, -y];
+  }
+
   onMouseClick(state: MouseState) {}
 
-  onMouseUp(state: MouseState, pos: Point) {}
+  onDrawingMouseUp(state: MouseState, pos: Point) {
+    const p = this.drawingPoint || pos;
+    this.addPoint(this.toScaledPoint(p));
+    this.drawingPoint = null;
+  }
 }

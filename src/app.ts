@@ -17,6 +17,7 @@ export class App {
   private hitboxProgram: WebGLProgram;
   private frameBuf: WebGLFramebuffer;
   private clickedShape: Shape | null = null;
+  private drawingShape: Shape | null = null;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -150,15 +151,7 @@ export class App {
   }
 
   private getMousePoint(event: MouseEvent): Point {
-    return [event.pageX - this.canvasBound.left, event.pageY - this.canvasBound.top];
-  }
-
-  public onStatusChange(newStatus: Status) {
-    if (this.status === newStatus) {
-      return;
-    }
-    this.status = newStatus;
-    this.clickedShape = null;
+    return [event.pageX - this.canvasBound.x, event.pageY - this.canvasBound.y];
   }
 
   public render(_time: number) {
@@ -190,11 +183,19 @@ export class App {
     const {gl, canvas} = this;
 
     const pixelX = pos[0]; // (pos[0] / canvas.width) * 2 - 1;
-    const pixelY = canvas.height - pos[1]; // ((canvas.height - pos[1]) / canvas.height) * 2 - 1;
+    const pixelY = canvas.clientHeight - pos[1]; // ((canvas.height - pos[1]) / canvas.height) * 2 - 1;
     const data = new Uint8Array(4);
     gl.readPixels(pixelX, pixelY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data);
     const id = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
     return id;
+  }
+
+  public onStatusChange(newStatus: Status) {
+    if (this.status === newStatus) {
+      return;
+    }
+    this.status = newStatus;
+    this.clickedShape = null;
   }
 
   private onMouseMove(newPos: Point) {
@@ -204,8 +205,10 @@ export class App {
     }
     this.mouseState.bef = this.mouseState.pos;
     this.mouseState.pos = newPos;
+
+    // Kalo dragging, panggil clickedShape on mouse move
     if (this.mouseState.pressed.pos) {
-      this.clickedShape?.onMouseMove(this.mouseState);
+      this.clickedShape?.onSelectedMouseMove(this.mouseState);
     }
   }
 
@@ -217,16 +220,16 @@ export class App {
       }
       const clickedId = this.mouseState.shapeId;
       this.clickedShape = this.shapes.filter((v) => v.containsId(clickedId))[0] ?? null;
+    } else {
     }
   }
 
   private onMouseUp(pos: Point) {
     this.mouseState.pressed.pos = null;
     if (this.status === "SELECT") {
-      for (const shape of this.shapes) {
-        shape.onMouseUp(this.mouseState, pos);
-      }
-      // this.clickedShape = null;
+    } else if (this.drawingShape) {
+      this.drawingShape.onDrawingMouseUp(this.mouseState, pos);
+      this.drawingShape = null;
     }
   }
 
