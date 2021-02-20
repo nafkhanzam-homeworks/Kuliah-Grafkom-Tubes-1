@@ -73,11 +73,11 @@ export abstract class Shape {
     const {gl, program} = this;
 
     gl.useProgram(program);
-    this.renderShape();
     if (this.selected) {
-      this.renderSelected();
       this.renderPoints();
+      this.renderSelected();
     }
+    this.renderShape();
   }
 
   protected createShader(shaderType: number, source: string): WebGLShader {
@@ -123,12 +123,37 @@ export abstract class Shape {
   protected renderPoints() {
     const {gl, program} = this;
 
-    const points = this.flatPoints();
+    const sides = 4;
+    const count = sides + 2;
+    const size = 0.025;
+
+    const points = this.points
+      .map(({point: v}) => {
+        return [
+          v[0],
+          v[1],
+          v[0] + size,
+          v[1] + size,
+          v[0] - size,
+          v[1] + size,
+          v[0] - size,
+          v[1] - size,
+          v[0] + size,
+          v[1] - size,
+          v[0] + size,
+          v[1] + size,
+        ];
+      })
+      .flat();
     this.createArrayBuffer(program, points, constants.pointSize);
+
+    gl.lineWidth(6);
 
     this.applyColor(program, constants.selectedPointColor);
 
-    gl.drawArrays(gl.POINTS, 0, this.points.length);
+    for (let i = 0; i < this.points.length; ++i) {
+      gl.drawArrays(gl.TRIANGLE_FAN, i * count, count);
+    }
   }
 
   protected renderSelected() {

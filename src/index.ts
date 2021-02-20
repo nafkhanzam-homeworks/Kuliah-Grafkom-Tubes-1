@@ -9,7 +9,7 @@ if (!gl) {
 }
 
 const bgColor: Color = [1, 1, 1];
-const size = [1080, 720] as const;
+const size = [720, 720] as const;
 const app = new App(canvas, gl, ...size, bgColor);
 
 const polygon = new Polygon(canvas, gl, [1, 0, 0]);
