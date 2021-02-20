@@ -17,31 +17,52 @@ export class Polygon extends Shape {
   renderHitboxShape(hitboxProgram: WebGLProgram): void {
     const {gl} = this;
 
-    const points = this.flatPoints(true);
+    const points = this.convexHullPoints().flat();
     this.createArrayBuffer(hitboxProgram, points, constants.pointSize);
 
     this.assignDataId(this.id, hitboxProgram);
 
-    let len = this.points.length;
-    if (this.drawingPoint) {
-      ++len;
-    }
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, len);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, points.length / constants.pointSize);
   }
 
   protected renderShape() {
     const {gl, program} = this;
 
-    const points = this.flatPoints(true);
+    const points = this.convexHullPoints().flat();
     this.createArrayBuffer(program, points, constants.pointSize);
 
     this.applyColor(program, this.color);
 
-    let len = this.points.length;
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, points.length / constants.pointSize);
+  }
+
+  private convexHullPoints(): Point[] {
+    const points = this.points.map((v) => v.point);
     if (this.drawingPoint) {
-      ++len;
+      points.push(this.drawingPoint);
     }
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, len);
+    if (points.length < 3) {
+      return points;
+    }
+    let pI = 0;
+    for (let i = 0; i < points.length; ++i) {
+      if (points[i][0] < points[pI][0]) {
+        pI = i;
+      }
+    }
+    const start = pI;
+    const res: Point[] = [];
+    do {
+      res.push(points[pI]);
+      let nextP = (pI + 1) % points.length;
+      for (let i = 0; i < points.length; ++i) {
+        if (orientation(points[pI], points[i], points[nextP]) === "ccw") {
+          nextP = i;
+        }
+      }
+      pI = nextP;
+    } while (pI !== start);
+    return res;
   }
 
   onDrawingApplyPressed(state: MouseState) {
@@ -57,3 +78,11 @@ export class Polygon extends Shape {
     };
   }
 }
+
+const orientation = (p: Point, q: Point, r: Point) => {
+  const val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1]);
+  if (val == 0) {
+    return "colinear";
+  }
+  return val > 0 ? "cw" : "ccw";
+};
