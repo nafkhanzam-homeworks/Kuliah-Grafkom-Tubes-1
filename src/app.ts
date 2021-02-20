@@ -301,6 +301,8 @@ const mapToTypeInstance = (shape: Shape): ShapeInstance | null => {
       object: shape.getDataInstance(),
     };
   }
+  // TODO
+
   return null;
 };
 
