@@ -123,19 +123,19 @@ export abstract class Shape {
   protected renderPoints() {
     const {gl, program} = this;
 
-    const sides = 4;
-    const count = sides + 2;
+    const count = 6;
     const size = 0.025;
 
     const points = this.points
       .map(({point: v}) => {
         return [
-          v[0],
-          v[1],
           v[0] + size,
           v[1] + size,
           v[0] - size,
           v[1] + size,
+          v[0] - size,
+          v[1] - size,
+
           v[0] - size,
           v[1] - size,
           v[0] + size,
@@ -151,9 +151,7 @@ export abstract class Shape {
 
     this.applyColor(program, constants.selectedPointColor);
 
-    for (let i = 0; i < this.points.length; ++i) {
-      gl.drawArrays(gl.TRIANGLE_FAN, i * count, count);
-    }
+    gl.drawArrays(gl.TRIANGLES, 0, points.length / constants.pointSize);
   }
 
   protected renderSelected() {
