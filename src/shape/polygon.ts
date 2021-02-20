@@ -1,4 +1,5 @@
 import {constants} from "../constants";
+import {toDataId} from "./id";
 import {Shape} from "./shape";
 
 export class Polygon extends Shape {
@@ -9,7 +10,7 @@ export class Polygon extends Shape {
     this.createArrayBuffer(hitboxProgram, points, constants.pointSize);
 
     const dataPointer = gl.getUniformLocation(hitboxProgram, "dataId");
-    gl.uniform4fv(dataPointer, new Float32Array(this.dataId));
+    gl.uniform4fv(dataPointer, new Float32Array(toDataId(this.id)));
 
     gl.drawArrays(gl.TRIANGLE_FAN, 0, this.points.length);
   }

@@ -7,20 +7,12 @@ export abstract class Shape {
   protected points: {id: number; point: Point}[] = [];
   protected selected: boolean = false;
   protected id: number = createId();
-  protected dataId: [number, number, number, number];
 
   constructor(
     protected canvas: HTMLCanvasElement,
     protected gl: WebGL2RenderingContext,
     protected color: Color,
   ) {
-    const id = this.id;
-    this.dataId = [
-      ((id >> 0) & 0xff) / 0xff,
-      ((id >> 8) & 0xff) / 0xff,
-      ((id >> 16) & 0xff) / 0xff,
-      ((id >> 24) & 0xff) / 0xff,
-    ];
     const program = gl.createProgram();
     if (!program) {
       throw new Error("Failed when creating program!");
@@ -123,7 +115,6 @@ export abstract class Shape {
   protected renderPoints() {
     const {gl, program} = this;
 
-    const count = 6;
     const size = 0.025;
 
     const points = this.points
@@ -165,6 +156,10 @@ export abstract class Shape {
     this.applyColor(program, constants.selectedColor);
 
     gl.drawArrays(gl.LINE_LOOP, 0, this.points.length);
+  }
+
+  containsId(id: number) {
+    return [this.id, ...this.points.map((v) => v.id)].includes(id);
   }
 
   setColor(color: Color) {

@@ -16,7 +16,7 @@ export class App {
   private canvasBound: DOMRect;
   private hitboxProgram: WebGLProgram;
   private frameBuf: WebGLFramebuffer;
-  private data: Uint8Array = new Uint8Array(4);
+  private clickedShape: Shape | null = null;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -189,7 +189,6 @@ export class App {
     const pixelY = canvas.height - pos[1]; // ((canvas.height - pos[1]) / canvas.height) * 2 - 1;
     const data = new Uint8Array(4);
     gl.readPixels(pixelX, pixelY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data);
-    this.data = data;
     const id = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
     return id;
   }
@@ -201,9 +200,7 @@ export class App {
     }
     this.mouseState.bef = this.mouseState.pos;
     this.mouseState.pos = newPos;
-    for (const shape of this.shapes) {
-      shape.onMouseMove(this.mouseState);
-    }
+    this.clickedShape?.onMouseMove(this.mouseState);
   }
 
   private onMouseClick(pos: Point) {
@@ -213,9 +210,9 @@ export class App {
       shape.setSelected(false);
     }
     const clickedId = this.mouseState.shapeId;
-    const clickedShape: Shape | undefined = this.shapes.filter((v) => v.getId() === clickedId)[0];
-    if (clickedShape) {
-      clickedShape.setSelected(true);
+    this.clickedShape = this.shapes.filter((v) => v.containsId(clickedId))[0] ?? null;
+    if (this.clickedShape) {
+      this.clickedShape.setSelected(true);
     }
   }
 
@@ -224,6 +221,7 @@ export class App {
     for (const shape of this.shapes) {
       shape.onMouseUp(this.mouseState, pos);
     }
+    this.clickedShape = null;
   }
 
   public addShape(shape: Shape) {
