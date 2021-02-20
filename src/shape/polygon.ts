@@ -23,4 +23,10 @@ export class Polygon extends Shape {
 
     gl.drawArrays(gl.TRIANGLE_FAN, 0, this.points.length);
   }
+
+  onDrawingApplyPressed(state: MouseState) {
+    super.onDrawingApplyPressed(state);
+    const pos = this.drawingPoint || state.pos;
+    this.addPoint(pos);
+  }
 }

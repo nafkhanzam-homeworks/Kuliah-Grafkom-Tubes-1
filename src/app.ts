@@ -1,3 +1,4 @@
+import {Polygon} from "./shape/polygon";
 import {Shape} from "./shape/shape";
 
 type Status = "SELECT" | "LINE" | "SQUARE" | "POLYGON";
@@ -20,7 +21,7 @@ export class App {
 
   constructor(
     private canvas: HTMLCanvasElement,
-    private gl: WebGLRenderingContext,
+    private gl: WebGL2RenderingContext,
     width: number,
     height: number,
     private backgroundColor: Color,
@@ -32,11 +33,16 @@ export class App {
       this.onMouseMove(this.getMousePoint(event));
     });
     canvas.addEventListener("mousedown", (event) => {
-      this.onMouseClick(this.getMousePoint(event));
+      this.onMouseDown(this.getMousePoint(event));
     });
     canvas.addEventListener("mouseup", (event) => {
       this.onMouseUp(this.getMousePoint(event));
     });
+    document.onkeypress = (e) => {
+      if (e.key === "Enter") {
+        this.onApplyPressed(this.mouseState);
+      }
+    };
 
     const hitboxProgram = gl.createProgram();
     if (!hitboxProgram) {
@@ -152,12 +158,12 @@ export class App {
   public render(_time: number) {
     const {gl, hitboxProgram} = this;
 
-    gl.clearColor(...this.backgroundColor, 1);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     // drawing texture
     const frameBuffer = this.frameBuf;
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffer);
     gl.enable(gl.DEPTH_TEST);
+    gl.clearColor(...this.backgroundColor, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     gl.useProgram(hitboxProgram);
@@ -169,7 +175,8 @@ export class App {
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-    for (const shape of this.shapes) {
+    this.drawingShape?.render(true);
+    for (const shape of this.shapes.reverse()) {
       shape.render(this.clickedShape?.getId() === shape.getId());
     }
   }
@@ -177,8 +184,8 @@ export class App {
   private getPixelId(pos: Point) {
     const {gl, canvas} = this;
 
-    const pixelX = pos[0]; // (pos[0] / canvas.width) * 2 - 1;
-    const pixelY = canvas.clientHeight - pos[1]; // ((canvas.height - pos[1]) / canvas.height) * 2 - 1;
+    const pixelX = pos[0];
+    const pixelY = canvas.clientHeight - pos[1];
     const data = new Uint8Array(4);
     gl.readPixels(pixelX, pixelY, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, data);
     const id = data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24);
@@ -201,21 +208,27 @@ export class App {
     this.mouseState.bef = this.mouseState.pos;
     this.mouseState.pos = newPos;
 
-    // Kalo dragging, panggil clickedShape on mouse move
-    if (this.mouseState.pressed.pos) {
-      this.clickedShape?.onSelectedMouseMove(this.mouseState);
+    if (this.status === "SELECT") {
+      // Kalo dragging, panggil clickedShape on mouse move
+      if (this.mouseState.pressed.pos) {
+        this.clickedShape?.onSelectedMouseMove(this.mouseState);
+      }
+    } else if (this.drawingShape && this.mouseState.pressed.pos) {
+      this.drawingShape.onDrawingMouseMove(this.mouseState);
     }
   }
 
-  private onMouseClick(pos: Point) {
+  private onMouseDown(pos: Point) {
     this.mouseState.pressed.pos = pos;
     if (this.status === "SELECT") {
-      for (const shape of this.shapes) {
-        shape.onMouseClick(this.mouseState);
-      }
       const clickedId = this.mouseState.shapeId;
       this.clickedShape = this.shapes.filter((v) => v.containsId(clickedId))[0] ?? null;
-    } else {
+    } else if (!this.drawingShape) {
+      this.drawingShape = this.mapToShape(this.status);
+      if (this.drawingShape) {
+        this.drawingShape.addPoint(this.toScaledPoint(pos));
+        this.drawingShape.setDrawingPoint(this.toScaledPoint(pos));
+      }
     }
   }
 
@@ -224,8 +237,13 @@ export class App {
     if (this.status === "SELECT") {
     } else if (this.drawingShape) {
       this.drawingShape.onDrawingMouseUp(this.mouseState, pos);
+      this.addShape(this.drawingShape);
       this.drawingShape = null;
     }
+  }
+
+  private onApplyPressed(state: MouseState) {
+    this.drawingShape?.onDrawingApplyPressed(state);
   }
 
   public addShape(shape: Shape) {
@@ -233,4 +251,20 @@ export class App {
   }
 
   public save() {}
+
+  toScaledPoint(point: Point): Point {
+    const x = (point[0] / this.canvas.width) * 2 - 1;
+    const y = (point[1] / this.canvas.height) * 2 - 1;
+    return [x, -y];
+  }
+
+  mapToShape(status: Status): Shape | null {
+    switch (status) {
+      case "POLYGON":
+        return new Polygon(this.canvas, this.gl, randColor());
+    }
+    return null;
+  }
 }
+
+const randColor = (): Color => [Math.random(), Math.random(), Math.random()];

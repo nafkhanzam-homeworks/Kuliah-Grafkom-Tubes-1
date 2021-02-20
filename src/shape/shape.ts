@@ -132,11 +132,15 @@ export abstract class Shape {
   protected renderPoints(program: WebGLProgram, assignId: boolean = false) {
     const {gl} = this;
 
-    const size = 0.025;
+    const size = 0.02;
     const count = 6;
 
-    const points = this.points
-      .map(({point: v}) => {
+    const pp = this.points.map((v) => v.point);
+    if (this.drawingPoint) {
+      pp.push(this.drawingPoint);
+    }
+    const points = pp
+      .map((v) => {
         return [
           v[0] + size,
           v[1] + size,
@@ -229,17 +233,22 @@ export abstract class Shape {
     }
   }
 
-  private toScaledPoint(point: Point): Point {
+  toScaledPoint(point: Point): Point {
     const x = (point[0] / this.canvas.width) * 2 - 1;
     const y = (point[1] / this.canvas.height) * 2 - 1;
     return [x, -y];
   }
 
-  onMouseClick(state: MouseState) {}
-
   onDrawingMouseUp(state: MouseState, pos: Point) {
-    const p = this.drawingPoint || pos;
-    this.addPoint(this.toScaledPoint(p));
-    this.drawingPoint = null;
+    if (this.drawingPoint) {
+      this.addPoint(this.toScaledPoint(this.drawingPoint));
+      this.setDrawingPoint(null);
+    }
   }
+
+  onDrawingMouseMove(state: MouseState) {
+    this.setDrawingPoint(this.toScaledPoint(state.pos));
+  }
+
+  onDrawingApplyPressed(state: MouseState) {}
 }
