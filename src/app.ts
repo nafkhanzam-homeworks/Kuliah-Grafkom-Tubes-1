@@ -154,7 +154,11 @@ export class App {
   }
 
   public onStatusChange(newStatus: Status) {
+    if (this.status === newStatus) {
+      return;
+    }
     this.status = newStatus;
+    this.clickedShape = null;
   }
 
   public render(_time: number) {
@@ -170,7 +174,7 @@ export class App {
 
     gl.useProgram(hitboxProgram);
     for (const shape of this.shapes) {
-      shape.renderHitbox(hitboxProgram);
+      shape.renderHitbox(hitboxProgram, this.clickedShape?.getId() === shape.getId());
     }
 
     this.mouseState.shapeId = this.getPixelId(this.mouseState.pos);
@@ -178,7 +182,7 @@ export class App {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     for (const shape of this.shapes) {
-      shape.render();
+      shape.render(this.clickedShape?.getId() === shape.getId());
     }
   }
 
@@ -200,28 +204,30 @@ export class App {
     }
     this.mouseState.bef = this.mouseState.pos;
     this.mouseState.pos = newPos;
-    this.clickedShape?.onMouseMove(this.mouseState);
+    if (this.mouseState.pressed.pos) {
+      this.clickedShape?.onMouseMove(this.mouseState);
+    }
   }
 
   private onMouseClick(pos: Point) {
     this.mouseState.pressed.pos = pos;
-    for (const shape of this.shapes) {
-      shape.onMouseClick(this.mouseState);
-      shape.setSelected(false);
-    }
-    const clickedId = this.mouseState.shapeId;
-    this.clickedShape = this.shapes.filter((v) => v.containsId(clickedId))[0] ?? null;
-    if (this.clickedShape) {
-      this.clickedShape.setSelected(true);
+    if (this.status === "SELECT") {
+      for (const shape of this.shapes) {
+        shape.onMouseClick(this.mouseState);
+      }
+      const clickedId = this.mouseState.shapeId;
+      this.clickedShape = this.shapes.filter((v) => v.containsId(clickedId))[0] ?? null;
     }
   }
 
   private onMouseUp(pos: Point) {
     this.mouseState.pressed.pos = null;
-    for (const shape of this.shapes) {
-      shape.onMouseUp(this.mouseState, pos);
+    if (this.status === "SELECT") {
+      for (const shape of this.shapes) {
+        shape.onMouseUp(this.mouseState, pos);
+      }
+      // this.clickedShape = null;
     }
-    this.clickedShape = null;
   }
 
   public addShape(shape: Shape) {

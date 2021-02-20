@@ -5,7 +5,6 @@ import {createId, toDataId} from "./id";
 export abstract class Shape {
   protected program: WebGLProgram;
   protected points: {id: number; point: Point}[] = [];
-  protected selected: boolean = false;
   protected id: number = createId();
 
   constructor(
@@ -65,8 +64,8 @@ export abstract class Shape {
   }
 
   abstract renderHitboxShape(hitboxProgram: WebGLProgram): void;
-  renderHitbox(hitboxProgram: WebGLProgram) {
-    if (this.selected) {
+  renderHitbox(hitboxProgram: WebGLProgram, selected: boolean) {
+    if (selected) {
       this.renderPoints(hitboxProgram, true);
       this.renderSelected(hitboxProgram);
     }
@@ -74,11 +73,11 @@ export abstract class Shape {
   }
 
   protected abstract renderShape(): void;
-  render() {
+  render(selected: boolean) {
     const {gl, program} = this;
 
     gl.useProgram(program);
-    if (this.selected) {
+    if (selected) {
       this.renderPoints(program);
       this.renderSelected(program);
     }
@@ -198,10 +197,6 @@ export abstract class Shape {
 
   updatePoint(index: number, p: Point) {
     this.points[index].point = p;
-  }
-
-  setSelected(value: boolean) {
-    this.selected = value;
   }
 
   getId() {

@@ -21,23 +21,41 @@ polygon.addPoint([-0.75, 1]);
 app.addShape(polygon);
 
 const selectBtn = document.getElementById("select") as HTMLButtonElement;
+const lineBtn = document.getElementById("line") as HTMLButtonElement;
+const squareBtn = document.getElementById("square") as HTMLButtonElement;
+const polygonBtn = document.getElementById("polygon") as HTMLButtonElement;
+const btns = [selectBtn, lineBtn, squareBtn, polygonBtn];
+selectBtn.disabled = true;
 selectBtn.onclick = () => {
   app.onStatusChange("SELECT");
+  for (const btn of btns) {
+    btn.disabled = false;
+  }
+  selectBtn.disabled = true;
 };
 
-const lineBtn = document.getElementById("line") as HTMLButtonElement;
 lineBtn.onclick = () => {
   app.onStatusChange("LINE");
+  for (const btn of btns) {
+    btn.disabled = false;
+  }
+  lineBtn.disabled = true;
 };
 
-const squareBtn = document.getElementById("square") as HTMLButtonElement;
 squareBtn.onclick = () => {
   app.onStatusChange("SQUARE");
+  for (const btn of btns) {
+    btn.disabled = false;
+  }
+  squareBtn.disabled = true;
 };
 
-const polygonBtn = document.getElementById("polygon") as HTMLButtonElement;
 polygonBtn.onclick = () => {
   app.onStatusChange("POLYGON");
+  for (const btn of btns) {
+    btn.disabled = false;
+  }
+  polygonBtn.disabled = true;
 };
 
 const render = (time: number) => {
