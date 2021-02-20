@@ -121,8 +121,12 @@ export abstract class Shape {
     gl.uniform3fv(colorPointer, new Float32Array(color));
   }
 
-  protected flatPoints() {
-    return this.points.map((v) => v.point).flat();
+  protected flatPoints(withDrawingPoint: boolean) {
+    const arr = this.points.map((v) => v.point);
+    if (withDrawingPoint && this.drawingPoint) {
+      arr.push(this.drawingPoint);
+    }
+    return arr.flat();
   }
 
   protected renderPoints(program: WebGLProgram, assignId: boolean = false) {
@@ -170,7 +174,7 @@ export abstract class Shape {
   protected renderSelected(program: WebGLProgram) {
     const {gl} = this;
 
-    const points = this.flatPoints();
+    const points = this.flatPoints(true);
     this.createArrayBuffer(program, points, constants.pointSize);
 
     gl.lineWidth(6);

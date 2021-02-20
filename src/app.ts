@@ -13,7 +13,6 @@ export class App {
     },
     shapeId: -1,
   };
-  private canvasBound: DOMRect;
   private hitboxProgram: WebGLProgram;
   private frameBuf: WebGLFramebuffer;
   private clickedShape: Shape | null = null;
@@ -29,14 +28,9 @@ export class App {
     canvas.width = width;
     canvas.height = height;
     gl.viewport(0, 0, width, height);
-    this.canvasBound = canvas.getBoundingClientRect();
-    canvas.addEventListener(
-      "mousemove",
-      (event) => {
-        this.onMouseMove(this.getMousePoint(event));
-      },
-      false,
-    );
+    canvas.addEventListener("mousemove", (event) => {
+      this.onMouseMove(this.getMousePoint(event));
+    });
     canvas.addEventListener("mousedown", (event) => {
       this.onMouseClick(this.getMousePoint(event));
     });
@@ -151,7 +145,8 @@ export class App {
   }
 
   private getMousePoint(event: MouseEvent): Point {
-    return [event.pageX - this.canvasBound.x, event.pageY - this.canvasBound.y];
+    const rect = this.canvas.getBoundingClientRect();
+    return [event.x - rect.left, event.y - rect.top];
   }
 
   public render(_time: number) {

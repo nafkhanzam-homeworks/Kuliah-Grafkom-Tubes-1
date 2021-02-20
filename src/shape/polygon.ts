@@ -1,12 +1,11 @@
 import {constants} from "../constants";
-import {toDataId} from "./id";
 import {Shape} from "./shape";
 
 export class Polygon extends Shape {
   renderHitboxShape(hitboxProgram: WebGLProgram): void {
     const {gl} = this;
 
-    const points = this.flatPoints();
+    const points = this.flatPoints(true);
     this.createArrayBuffer(hitboxProgram, points, constants.pointSize);
 
     this.assignDataId(this.id, hitboxProgram);
@@ -17,7 +16,7 @@ export class Polygon extends Shape {
   protected renderShape() {
     const {gl, program} = this;
 
-    const points = this.flatPoints();
+    const points = this.flatPoints(true);
     this.createArrayBuffer(program, points, constants.pointSize);
 
     this.applyColor(program, this.color);
