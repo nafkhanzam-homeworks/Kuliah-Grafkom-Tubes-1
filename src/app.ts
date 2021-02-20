@@ -168,7 +168,14 @@ export class App {
 
     gl.useProgram(hitboxProgram);
     for (const shape of this.shapes) {
-      shape.renderHitbox(hitboxProgram, this.clickedShape?.getId() === shape.getId());
+      if (this.clickedShape?.getId() === shape.getId()) {
+        shape.renderHitbox(hitboxProgram, true);
+      }
+    }
+    for (const shape of this.shapes) {
+      if (this.clickedShape?.getId() !== shape.getId()) {
+        shape.renderHitbox(hitboxProgram, false);
+      }
     }
 
     this.mouseState.shapeId = this.getPixelId(this.mouseState.pos);
@@ -176,8 +183,15 @@ export class App {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
     this.drawingShape?.render(true);
-    for (const shape of this.shapes.reverse()) {
-      shape.render(this.clickedShape?.getId() === shape.getId());
+    for (const shape of this.shapes) {
+      if (this.clickedShape?.getId() === shape.getId()) {
+        shape.render(true);
+      }
+    }
+    for (const shape of this.shapes) {
+      if (this.clickedShape?.getId() !== shape.getId()) {
+        shape.render(false);
+      }
     }
   }
 
@@ -236,8 +250,9 @@ export class App {
     this.mouseState.pressed.pos = null;
     if (this.status === "SELECT") {
     } else if (this.drawingShape) {
-      this.drawingShape.onDrawingMouseUp(this.mouseState, pos);
-      this.addShape(this.drawingShape);
+      if (this.drawingShape.onDrawingMouseUp(this.mouseState, pos)) {
+        this.addShape(this.drawingShape);
+      }
       this.drawingShape = null;
     }
   }
@@ -247,7 +262,7 @@ export class App {
   }
 
   public addShape(shape: Shape) {
-    this.shapes.push(shape);
+    this.shapes.splice(0, 0, shape);
   }
 
   public save() {}

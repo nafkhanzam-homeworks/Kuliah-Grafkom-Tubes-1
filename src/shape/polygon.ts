@@ -10,7 +10,11 @@ export class Polygon extends Shape {
 
     this.assignDataId(this.id, hitboxProgram);
 
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, this.points.length);
+    let len = this.points.length;
+    if (this.drawingPoint) {
+      ++len;
+    }
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, len);
   }
 
   protected renderShape() {
@@ -21,7 +25,11 @@ export class Polygon extends Shape {
 
     this.applyColor(program, this.color);
 
-    gl.drawArrays(gl.TRIANGLE_FAN, 0, this.points.length);
+    let len = this.points.length;
+    if (this.drawingPoint) {
+      ++len;
+    }
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, len);
   }
 
   onDrawingApplyPressed(state: MouseState) {

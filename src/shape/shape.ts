@@ -78,7 +78,7 @@ export abstract class Shape {
     const {gl, program} = this;
 
     gl.useProgram(program);
-    if (selected || this.drawingPoint) {
+    if (selected) {
       this.renderPoints(program);
       this.renderSelected(program);
     }
@@ -173,6 +173,9 @@ export abstract class Shape {
       }
       gl.drawArrays(gl.TRIANGLES, i * count, count);
     }
+    if (this.drawingPoint) {
+      gl.drawArrays(gl.TRIANGLES, this.points.length * count, count);
+    }
   }
 
   protected renderSelected(program: WebGLProgram) {
@@ -185,7 +188,11 @@ export abstract class Shape {
 
     this.applyColor(program, constants.selectedColor);
 
-    gl.drawArrays(gl.LINE_LOOP, 0, this.points.length);
+    let len = this.points.length;
+    if (this.drawingPoint) {
+      ++len;
+    }
+    gl.drawArrays(gl.LINE_LOOP, 0, len);
   }
 
   setDrawingPoint(p: Point | null) {
@@ -239,11 +246,11 @@ export abstract class Shape {
     return [x, -y];
   }
 
-  onDrawingMouseUp(state: MouseState, pos: Point) {
+  onDrawingMouseUp(state: MouseState, pos: Point): boolean {
     if (this.drawingPoint) {
-      this.addPoint(this.toScaledPoint(this.drawingPoint));
       this.setDrawingPoint(null);
     }
+    return this.points.length > 2;
   }
 
   onDrawingMouseMove(state: MouseState) {
