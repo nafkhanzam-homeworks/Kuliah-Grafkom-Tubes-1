@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Grafkom Tubes-1</title>
     <link rel="stylesheet" href="bootstrap.min.css" />
+    <link rel="stylesheet" href="./styles.css" />
     <script src="jquery-3.3.1.slim.min.js"></script>
     <script src="popper.min.js"></script>
     <script src="bootstrap.min.js"></script>
@@ -17,7 +18,14 @@
       <div class="card text-left">
         <div class="card-header d-flex">
           <h2 class="card-title font-weight-bold">Denah</h2>
-          <button class="btn btn-primary ml-auto" id="help">Help</button>
+          <button
+            class="btn btn-success ml-auto"
+            id="help"
+            data-toggle="modal"
+            data-target="#modal"
+          >
+            Help?
+          </button>
         </div>
         <div class="card-body border border-dark m-4 d-flex">
           <canvas id="app" width="1080" class="border border-primary" height="720"></canvas>
@@ -30,15 +38,48 @@
               <button class="btn btn-primary" id="polygon">Polygon</button>
               <p id="coord">(p, p)</p>
               <input type="file" id="file" />
-              <button class="btn btn-primary" id="load">Load</button>
+              <button class="btn btn-dark" id="load">Load</button>
               <div class="mt-4">
-                <button class="btn btn-primary" id="save">Save</button>
+                <button class="btn btn-dark" id="save">Save Denah</button>
               </div>
               <p>
                 Untuk polygon, click + drag, kemudian tekan enter untuk menambah point ke lokasi
                 cursor sekarang, lalu lepas click untuk selesai.
               </p>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title font-weight-bold" id="exampleModalLongTitle">Help</h2>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <ol>
+              <li>
+                <h5>Membuat Shape</h5>
+                <p>
+                  Cara membuat shape adalah dengan menekan salah satu tombol berwarna biru dibawah,
+                  shape, line, square, polygon
+                </p>
+              </li>
+              <li>
+                <h5>Mengedit bentuk shape</h5>
+                <p>
+                  Tekan salah satu tombol diujung shape untuk merubah bentuk dari shape tersebut
+                </p>
+              </li>
+            </ol>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>

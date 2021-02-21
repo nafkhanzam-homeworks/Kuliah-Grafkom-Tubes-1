@@ -1,0 +1,13 @@
+.modal {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.modal-dialog {
+  padding: 0;
+}
+
+.modal-content {
+  width: 100%;
+  margin: 0;
+}
