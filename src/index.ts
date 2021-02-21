@@ -1,4 +1,5 @@
 import {App} from "./app";
+import {Line} from "./shape/line";
 import {Polygon} from "./shape/polygon";
 import {Shape} from "./shape/shape";
 
@@ -15,13 +16,18 @@ const size = [720, 720] as const;
 const newApp = () => new App(canvas, gl, ...size, bgColor);
 let app = newApp();
 
-const polygon = new Polygon(canvas, gl, [1, 0, 0]);
-polygon.addPoint([1, 0.75]);
-polygon.addPoint([0.75, -1]);
-polygon.addPoint([0.5, 0.5]);
-polygon.addPoint([-1, -0.75]);
-polygon.addPoint([-0.75, 1]);
-app.addShape(polygon);
+// const polygon = new Polygon(canvas, gl, [1, 0, 0]);
+// polygon.addPoint([1, 0.75]);
+// polygon.addPoint([0.75, -1]);
+// polygon.addPoint([0.5, 0.5]);
+// polygon.addPoint([-1, -0.75]);
+// polygon.addPoint([-0.75, 1]);
+// app.addShape(polygon);
+
+const line = new Line(canvas, gl, [0, 1, 0]);
+line.addPoint([1, -0.75]);
+line.addPoint([-1, 0.75]);
+app.addShape(line);
 
 const selectBtn = document.getElementById("select") as HTMLButtonElement;
 const lineBtn = document.getElementById("line") as HTMLButtonElement;
@@ -86,7 +92,6 @@ const loadApp = (appInstance: AppInstance) => {
       if (shape.type === "polygon") {
         res = Polygon.load(canvas, gl, shape.object);
       } else if (shape.type === "line") {
-        // TODO
       } else if (shape.type === "square") {
         // TODO
       }
