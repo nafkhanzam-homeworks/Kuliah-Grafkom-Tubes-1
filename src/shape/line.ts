@@ -37,6 +37,12 @@ export class Line extends Shape {
     return this.points.map((point) => point.point).flat();
   }
 
+  onDrawingApplyPressed(state: MouseState) {
+    super.onDrawingApplyPressed(state);
+    const pos = this.drawingPoint || state.pos;
+    this.addPoint(pos);
+  }
+
   getDataInstance(): LineInstance {
     return {
       color: this.color,
