@@ -4,6 +4,8 @@ import {Shape} from "./shape";
 export class Line extends Shape {
   static load(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext, instance: LineInstance): Line {
     const line = new Line(canvas, gl, instance.color);
+    line.addPoint(instance.p0);
+    line.addPoint(instance.p1);
     return line;
   }
 
@@ -35,10 +37,11 @@ export class Line extends Shape {
     return this.points.map((point) => point.point).flat();
   }
 
-  getDataInstance(): PolygonInstance {
+  getDataInstance(): LineInstance {
     return {
       color: this.color,
-      points: this.points.map((v) => v.point),
+      p0: this.points[0].point,
+      p1: this.points[1].point,
     };
   }
 }

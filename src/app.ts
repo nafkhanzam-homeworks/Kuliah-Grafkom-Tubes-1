@@ -1,4 +1,5 @@
 import ColorManager from "./ColorManager";
+import {Line} from "./shape/line";
 import {Polygon} from "./shape/polygon";
 import {Shape} from "./shape/shape";
 
@@ -273,8 +274,6 @@ export class App {
     this.shapes.splice(0, 0, shape);
   }
 
-  public save() {}
-
   toScaledPoint(point: Point): Point {
     const x = (point[0] / this.canvas.width) * 2 - 1;
     const y = (point[1] / this.canvas.height) * 2 - 1;
@@ -306,6 +305,11 @@ const mapToTypeInstance = (shape: Shape): ShapeInstance | null => {
   if (shape instanceof Polygon) {
     return {
       type: "polygon",
+      object: shape.getDataInstance(),
+    };
+  } else if (shape instanceof Line) {
+    return {
+      type: "line",
       object: shape.getDataInstance(),
     };
   }

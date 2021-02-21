@@ -99,6 +99,7 @@ const loadApp = (appInstance: AppInstance) => {
       if (shape.type === "polygon") {
         res = Polygon.load(canvas, gl, shape.object);
       } else if (shape.type === "line") {
+        res = Line.load(canvas, gl, shape.object);
       } else if (shape.type === "square") {
         // TODO
       }
