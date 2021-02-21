@@ -284,6 +284,8 @@ export class App {
     switch (status) {
       case "POLYGON":
         return new Polygon(this.canvas, this.gl, randColor());
+      case "LINE":
+        return new Line(this.canvas, this.gl, randColor());
     }
     return null;
   }
