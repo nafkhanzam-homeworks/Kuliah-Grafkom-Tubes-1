@@ -29,23 +29,53 @@
         </div>
         <div class="card-body border border-dark m-4 d-flex">
           <canvas id="app" width="1080" class="border border-primary" height="720"></canvas>
-          <div class="card ml-4 flex-grow-1">
+          <div class="card ml-4 flex-grow-1 menu">
             <div class="card-header">Menu</div>
             <div class="card-body">
               <button class="btn btn-primary" id="select">Select</button>
               <button class="btn btn-primary" id="line">Line</button>
               <button class="btn btn-primary" id="square">Square</button>
               <button class="btn btn-primary" id="polygon">Polygon</button>
-              <p id="coord">(p, p)</p>
+              <div class="rgb-input border-dark border p-3 my-2">
+                <h4 class="mb-3">RGB Input</h4>
+                <p class="color-secondary">
+                  Masukan angka antara 1-255 untuk mengubah warna shape yang dipilih
+                </p>
+                <input
+                  value="0"
+                  min="0"
+                  max="255"
+                  step="1"
+                  type="number"
+                  placeholder="R"
+                  id="color-r"
+                />
+                <input
+                  value="0"
+                  min="0"
+                  max="255"
+                  step="1"
+                  type="number"
+                  placeholder="G"
+                  id="color-g"
+                />
+                <input
+                  value="0"
+                  min="0"
+                  max="255"
+                  step="1"
+                  type="number"
+                  placeholder="B"
+                  id="color-b"
+                /><br />
+                <button id="rgb-set-btn" class="btn mt-2">Set</button>
+              </div>
+              <p>Koordinat: <span id="coord">(p, p)</span></p>
               <input type="file" id="file" />
               <button class="btn btn-dark" id="load">Load</button>
               <div class="mt-4">
                 <button class="btn btn-dark" id="save">Save Denah</button>
               </div>
-              <p>
-                Untuk polygon, click + drag, kemudian tekan enter untuk menambah point ke lokasi
-                cursor sekarang, lalu lepas click untuk selesai.
-              </p>
             </div>
           </div>
         </div>

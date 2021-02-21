@@ -47,3 +47,8 @@ type MouseState = {
   };
   shapeId: number;
 };
+
+type RGBInput = {
+  name: string;
+  elmt: HTMLInputElement;
+};

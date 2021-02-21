@@ -1,4 +1,5 @@
 import {App} from "./app";
+import ColorManager from "./ColorManager";
 import {Line} from "./shape/line";
 import {Polygon} from "./shape/polygon";
 import {Shape} from "./shape/shape";
@@ -16,18 +17,33 @@ const size = [720, 720] as const;
 const newApp = () => new App(canvas, gl, ...size, bgColor);
 let app = newApp();
 
-// const polygon = new Polygon(canvas, gl, [1, 0, 0]);
-// polygon.addPoint([1, 0.75]);
-// polygon.addPoint([0.75, -1]);
-// polygon.addPoint([0.5, 0.5]);
-// polygon.addPoint([-1, -0.75]);
-// polygon.addPoint([-0.75, 1]);
-// app.addShape(polygon);
+const polygon = new Polygon(canvas, gl, [1, 0, 0]);
+polygon.addPoint([1, 0.75]);
+polygon.addPoint([0.75, -1]);
+polygon.addPoint([0.5, 0.5]);
+polygon.addPoint([-1, -0.75]);
+polygon.addPoint([-0.75, 1]);
+app.addShape(polygon);
 
 const line = new Line(canvas, gl, [0, 1, 0]);
 line.addPoint([1, -0.75]);
 line.addPoint([-1, 0.75]);
 app.addShape(line);
+
+// COLOR
+const colorRElmt = document.getElementById("color-r") as HTMLInputElement;
+const colorGElmt = document.getElementById("color-g") as HTMLInputElement;
+const colorBElmt = document.getElementById("color-b") as HTMLInputElement;
+const rgbSetBtn = document.getElementById("rgb-set-btn") as HTMLButtonElement;
+const rgbInputs = [colorRElmt, colorGElmt, colorBElmt];
+const appColorManager: ColorManager = new ColorManager(
+  colorRElmt,
+  colorGElmt,
+  colorBElmt,
+  rgbSetBtn,
+);
+
+app.setColorManager(appColorManager);
 
 const selectBtn = document.getElementById("select") as HTMLButtonElement;
 const lineBtn = document.getElementById("line") as HTMLButtonElement;

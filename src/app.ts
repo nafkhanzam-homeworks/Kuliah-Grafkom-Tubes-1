@@ -1,3 +1,4 @@
+import ColorManager from "./ColorManager";
 import {Polygon} from "./shape/polygon";
 import {Shape} from "./shape/shape";
 
@@ -18,6 +19,7 @@ export class App {
   private frameBuf: WebGLFramebuffer;
   private clickedShape: Shape | null = null;
   private drawingShape: Shape | null = null;
+  private colorManager?: ColorManager;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -155,6 +157,10 @@ export class App {
     return [event.x - rect.left, event.y - rect.top];
   }
 
+  public setColorManager(colorManager: ColorManager) {
+    this.colorManager = colorManager;
+  }
+
   public render(_time: number) {
     const {gl, hitboxProgram} = this;
 
@@ -237,7 +243,9 @@ export class App {
     if (this.status === "SELECT") {
       const clickedId = this.mouseState.shapeId;
       this.clickedShape = this.shapes.filter((v) => v.containsId(clickedId))[0] ?? null;
+      this.colorManager?.setSelectedShape(this.clickedShape);
     } else if (!this.drawingShape) {
+      this.colorManager?.removeSelectedShape();
       this.drawingShape = this.mapToShape(this.status);
       if (this.drawingShape) {
         this.drawingShape.addPoint(this.toScaledPoint(pos));

@@ -1,13 +1,25 @@
-.modal {
-  padding: 0 !important;
-  margin: 0 !important;
+.menu {
+  min-width: 400px;
 }
 
-.modal-dialog {
-  padding: 0;
+p {
+  width: auto;
 }
 
-.modal-content {
-  width: 100%;
-  margin: 0;
+.rgb-input > input {
+  width: 4rem;
+  height: 4rem;
+  text-align: center;
+}
+
+#color-r {
+  border: 2px solid red;
+}
+
+#color-g {
+  border: 2px solid green;
+}
+
+#color-b {
+  border: 2px solid blue;
 }
