@@ -2,8 +2,15 @@ import {constants} from "../constants";
 import {Shape} from "./shape";
 
 export class Square extends Shape {
+  private size: number;
+
+  public constructor(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext, color: Color, size: number){
+    super(canvas, gl, color);
+    this.size = size;
+  }
+
   static load(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext, instance: SquareInstance): Square {
-    const square = new Square(canvas, gl, instance.color);
+    const square = new Square(canvas, gl, instance.color, instance.size);
     square.addPoint(instance.p);
     return square;
   }
@@ -11,7 +18,7 @@ export class Square extends Shape {
   renderHitboxShape(hitboxProgram: WebGLProgram): void {
     const {gl} = this;
 
-    const points = this./*something*/.flat();
+    const points = this.getSquareVertices().flat();
     this.createArrayBuffer(hitboxProgram, points, constants.pointSize);
 
     this.assignDataId(this.id, hitboxProgram);
@@ -23,7 +30,7 @@ export class Square extends Shape {
   protected renderShape() {
     const {gl, program} = this;
 
-    const points = this./*something*/;
+    const points = this.getSquareVertices();
 
     this.createArrayBuffer(program, points, constants.pointSize);
 
@@ -32,10 +39,17 @@ export class Square extends Shape {
     gl.drawArrays(gl.TRIANGLES, 0, points.length / constants.pointSize);
   }
 
+  private getSquareVertices() {
+    const points = this.points[0];
+    const x = 0;
+    const y = 0;
+    return ();
+  }
+
   getDataInstance(): SquareInstance {
     return {
       color: this.color,
-      size:  ,  //needs expression but still confused
+      size: this.size,
       p: this.points[0].point,
     };
   }
