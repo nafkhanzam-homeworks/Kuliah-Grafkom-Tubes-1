@@ -3,6 +3,7 @@ import ColorManager from "./ColorManager";
 import {Line} from "./shape/line";
 import {Polygon} from "./shape/polygon";
 import {Shape} from "./shape/shape";
+import { Square } from "./shape/square";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 
@@ -29,6 +30,11 @@ const line = new Line(canvas, gl, [0, 1, 0]);
 line.addPoint([1, -0.75]);
 line.addPoint([-1, 0.75]);
 app.addShape(line);
+
+const square = new Square(canvas, gl, [0,0,1]);
+square.addPoint([0, -1]);
+square.setSize(0.5);
+app.addShape(square);
 
 // COLOR
 const colorRElmt = document.getElementById("color-r") as HTMLInputElement;

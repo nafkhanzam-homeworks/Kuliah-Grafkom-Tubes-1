@@ -2,23 +2,19 @@ import {constants} from "../constants";
 import {Shape} from "./shape";
 
 export class Square extends Shape {
-  private size: number;
-
-  public constructor(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext, color: Color, size: number){
-    super(canvas, gl, color);
-    this.size = size;
-  }
+  private size: number = 0;
 
   static load(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext, instance: SquareInstance): Square {
-    const square = new Square(canvas, gl, instance.color, instance.size);
+    const square = new Square(canvas, gl, instance.color);
     square.addPoint(instance.p);
+    square.setSize(instance.size);
     return square;
   }
 
   renderHitboxShape(hitboxProgram: WebGLProgram): void {
     const {gl} = this;
 
-    const points = this.getSquareVertices().flat();
+    const points = this.getAllPoints().flat();
     this.createArrayBuffer(hitboxProgram, points, constants.pointSize);
 
     this.assignDataId(this.id, hitboxProgram);
@@ -27,10 +23,18 @@ export class Square extends Shape {
     
   }
 
+  public setSize(size: number) {
+    this.size = size;
+    const points = this.getAllPoints();
+    points.forEach(point => {
+      this.addPoint(point)
+    })
+  }
+
   protected renderShape() {
     const {gl, program} = this;
 
-    const points = this.getSquareVertices();
+    const points = this.getAllPoints().flat();
 
     this.createArrayBuffer(program, points, constants.pointSize);
 
@@ -39,11 +43,13 @@ export class Square extends Shape {
     gl.drawArrays(gl.TRIANGLES, 0, points.length / constants.pointSize);
   }
 
-  private getSquareVertices() {
-    const points = this.points[0];
-    const x = 0;
-    const y = 0;
-    return ();
+  public getAllPoints(): Point[] {
+    const point = this.points[0].point;
+    const x: number = point[0];
+    const y: number = point[1];
+    console.log(x);
+    console.log(y);
+    return [point,[x+this.size,y],[x+this.size,y+this.size],[x,y+this.size]];
   }
 
   getDataInstance(): SquareInstance {
