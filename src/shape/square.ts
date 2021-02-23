@@ -69,10 +69,10 @@ export class Square extends Shape {
     ];
   }
 
-  private updateBy2Points(a: Point, b: Point) {
-    const size = Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]));
-    const x = Math.min(a[0], b[0]);
-    const y = Math.min(a[1], b[1]);
+  private updateBy2Points(pivot: Point, pos: Point) {
+    const size = Math.max(Math.abs(pivot[0] - pos[0]), Math.abs(pivot[1] - pos[1]));
+    const x = pivot[0] < pos[0] ? pivot[0] : pivot[0] - size;
+    const y = pivot[1] < pos[1] ? pivot[1] : pivot[1] - size;
     this.point = [x, y];
     this.size = size;
     this.updatePoints();
@@ -102,20 +102,31 @@ export class Square extends Shape {
 
   onDrawingApplyPressed(): void {}
 
+  private pivot: Point | null = null;
   onSelectedMouseMove(id: number, [dx, dy]: [number, number], [x, y]: Point): void {
     if (id === this.id) {
       this.point[0] += dx;
       this.point[1] += dy;
       this.updatePoints();
     } else {
-      const i = this.points.findIndex((v) => v.id === id);
-      if (i >= 0 && i < this.points.length) {
-        this.updateBy2Points([x, y], this.points[(i + 2) % 4].point);
+      if (!this.pivot) {
+        const i = this.points.findIndex((v) => v.id === id);
+        if (i >= 0 && i < this.points.length) {
+          this.pivot = this.points[(i + 2) % 4].point;
+        }
+      }
+      if (this.pivot) {
+        this.updateBy2Points(this.pivot, [x, y]);
       }
     }
   }
 
+  onSelectedMouseUp(state: MouseState, pos: Point) {
+    this.pivot = null;
+  }
+
   onDrawingMouseUp(state: MouseState, pos: Point): boolean {
+    this.pivot = null;
     if (this.drawingPoint) {
       this.setDrawingPoint(null);
       return true;
@@ -125,10 +136,13 @@ export class Square extends Shape {
 
   onDrawingMouseMove(state: MouseState) {
     super.onDrawingMouseMove(state);
-    this.drawingPoint && this.updateBy2Points(this.point, this.drawingPoint);
+    if (this.pivot && this.drawingPoint) {
+      this.updateBy2Points(this.pivot, this.drawingPoint);
+    }
   }
 
   onDrawingMouseDown(pos: Point) {
-    this.updateBy2Points(pos, pos);
+    this.pivot = this.toScaledPoint(pos);
+    this.updateBy2Points(this.pivot, this.pivot);
   }
 }

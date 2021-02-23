@@ -227,6 +227,7 @@ export abstract class Shape {
   }
 
   abstract onSelectedMouseMove(id: number, delta: [number, number], mouseScaledPos: Point): void;
+  abstract onSelectedMouseUp(state: MouseState, pos: Point): void;
 
   toScaledPoint(point: Point): Point {
     const x = (point[0] / this.canvas.width) * 2 - 1;

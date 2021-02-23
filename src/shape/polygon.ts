@@ -84,6 +84,8 @@ export class Polygon extends Shape {
     }
   }
 
+  onSelectedMouseUp(state: MouseState, pos: Point) {}
+
   onDrawingMouseUp() {
     if (this.drawingPoint) {
       this.addPoint(this.drawingPoint);

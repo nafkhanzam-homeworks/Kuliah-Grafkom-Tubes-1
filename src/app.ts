@@ -267,6 +267,7 @@ export class App {
   private onMouseUp(pos: Point) {
     this.mouseState.pressed.pos = null;
     if (this.status === "SELECT") {
+      this.clickedShape?.onSelectedMouseUp(this.mouseState, pos);
     } else if (this.drawingShape) {
       if (this.drawingShape.onDrawingMouseUp(this.mouseState, pos)) {
         this.addShape(this.drawingShape);

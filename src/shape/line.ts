@@ -71,6 +71,8 @@ export class Line extends Shape {
     }
   }
 
+  onSelectedMouseUp(state: MouseState, pos: Point) {}
+
   onDrawingMouseUp(state: MouseState, pos: Point): boolean {
     if (this.drawingPoint) {
       this.addPoint(this.drawingPoint);
