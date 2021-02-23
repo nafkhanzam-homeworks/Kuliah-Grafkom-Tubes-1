@@ -18,7 +18,9 @@ export class Line extends Shape {
 
     this.assignDataId(this.id, hitboxProgram);
 
+    gl.lineWidth(6);
     gl.drawArrays(gl.LINES, 0, points.length / constants.pointSize);
+    gl.lineWidth(1);
   }
 
   protected renderShape() {
@@ -29,8 +31,8 @@ export class Line extends Shape {
     this.createArrayBuffer(program, points, constants.pointSize);
 
     this.applyColor(program, this.color);
-    gl.lineWidth(6);
 
+    gl.lineWidth(6);
     gl.drawArrays(gl.LINES, 0, points.length / constants.pointSize);
     gl.lineWidth(1);
   }
