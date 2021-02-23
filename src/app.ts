@@ -2,6 +2,7 @@ import ColorManager from "./ColorManager";
 import {Line} from "./shape/line";
 import {Polygon} from "./shape/polygon";
 import {Shape} from "./shape/shape";
+import {Square} from "./shape/square";
 
 type Status = "SELECT" | "LINE" | "SQUARE" | "POLYGON";
 
@@ -314,8 +315,12 @@ const mapToTypeInstance = (shape: Shape): ShapeInstance | null => {
       type: "line",
       object: shape.getDataInstance(),
     };
+  } else if (shape instanceof Square) {
+    return {
+      type: "square",
+      object: shape.getDataInstance(),
+    };
   }
-  // TODO
 
   return null;
 };

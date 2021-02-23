@@ -1,14 +1,23 @@
 import {constants} from "../constants";
+import {createId} from "./id";
 import {Shape} from "./shape";
 
 export class Square extends Shape {
-  private size: number = 0;
+  constructor(
+    private point: Point,
+    private size: number,
+    ...args: AbstractContructorParameters<typeof Shape>
+  ) {
+    super(...args);
+    this.updatePoints();
+  }
 
-  static load(canvas: HTMLCanvasElement, gl: WebGL2RenderingContext, instance: SquareInstance): Square {
-    const square = new Square(canvas, gl, instance.color);
-    square.addPoint(instance.p);
-    square.setSize(instance.size);
-    return square;
+  static load(
+    canvas: HTMLCanvasElement,
+    gl: WebGL2RenderingContext,
+    instance: SquareInstance,
+  ): Square {
+    return new Square(instance.p, instance.size, canvas, gl, instance.color);
   }
 
   renderHitboxShape(hitboxProgram: WebGLProgram): void {
@@ -19,16 +28,12 @@ export class Square extends Shape {
 
     this.assignDataId(this.id, hitboxProgram);
 
-    gl.drawArrays(gl.TRIANGLES, 0, points.length / constants.pointSize);
-    
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, points.length / constants.pointSize);
   }
 
   public setSize(size: number) {
     this.size = size;
-    const points = this.getAllPoints();
-    points.forEach(point => {
-      this.addPoint(point)
-    })
+    this.updatePoints();
   }
 
   protected renderShape() {
@@ -40,23 +45,35 @@ export class Square extends Shape {
 
     this.applyColor(program, this.color);
 
-    gl.drawArrays(gl.TRIANGLES, 0, points.length / constants.pointSize);
+    gl.drawArrays(gl.TRIANGLE_FAN, 0, points.length / constants.pointSize);
+  }
+
+  private updatePoints() {
+    const target = this.getAllPoints();
+    for (let i = 0; i < 4; ++i) {
+      const p = this.points[i];
+      this.points[i] = {
+        id: p?.id ?? createId(),
+        point: target[i],
+      };
+    }
   }
 
   public getAllPoints(): Point[] {
-    const point = this.points[0].point;
-    const x: number = point[0];
-    const y: number = point[1];
-    console.log(x);
-    console.log(y);
-    return [point,[x+this.size,y],[x+this.size,y+this.size],[x,y+this.size]];
+    const [x, y] = this.point;
+    return [
+      [x, y],
+      [x + this.size, y],
+      [x + this.size, y + this.size],
+      [x, y + this.size],
+    ];
   }
 
   getDataInstance(): SquareInstance {
     return {
       color: this.color,
       size: this.size,
-      p: this.points[0].point,
+      p: this.point,
     };
   }
 }

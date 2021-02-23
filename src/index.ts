@@ -3,7 +3,7 @@ import ColorManager from "./ColorManager";
 import {Line} from "./shape/line";
 import {Polygon} from "./shape/polygon";
 import {Shape} from "./shape/shape";
-import { Square } from "./shape/square";
+import {Square} from "./shape/square";
 
 const canvas = document.getElementById("app") as HTMLCanvasElement;
 
@@ -31,9 +31,7 @@ line.addPoint([1, -0.75]);
 line.addPoint([-1, 0.75]);
 app.addShape(line);
 
-const square = new Square(canvas, gl, [0,0,1]);
-square.addPoint([0, -1]);
-square.setSize(0.5);
+const square = new Square([0, -1], 0.5, canvas, gl, [0, 0, 1]);
 app.addShape(square);
 
 // COLOR
@@ -107,7 +105,7 @@ const loadApp = (appInstance: AppInstance) => {
       } else if (shape.type === "line") {
         res = Line.load(canvas, gl, shape.object);
       } else if (shape.type === "square") {
-        // TODO
+        res = Square.load(canvas, gl, shape.object);
       }
       if (res) {
         loadedApp.addShape(res);
