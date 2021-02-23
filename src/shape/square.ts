@@ -79,4 +79,36 @@ export class Square extends Shape {
       },
     };
   }
+
+  private getSizeToPoint(p: Point) {
+    return Math.max(Math.abs(p[0] - this.point[0]), Math.abs(p[1] - this.point[1]));
+  }
+
+  setDrawingPoint(p: Point | null) {
+    super.setDrawingPoint(p);
+    if (p) {
+      this.setSize(this.getSizeToPoint(p));
+    }
+  }
+
+  onDrawingApplyPressed(): void {}
+
+  onSelectedMouseMove(id: number, [dx, dy]: [number, number]): void {
+    if (id === this.id) {
+      this.point[0] += dx;
+      this.point[1] += dy;
+      this.updatePoints();
+    } else {
+      const i = this.points.findIndex((v) => v.id === id);
+      // TODO
+    }
+  }
+
+  onDrawingMouseUp(state: MouseState, pos: Point): boolean {
+    if (this.drawingPoint) {
+      this.setDrawingPoint(null);
+      return true;
+    }
+    return false;
+  }
 }

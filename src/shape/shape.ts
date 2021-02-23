@@ -160,8 +160,6 @@ export abstract class Shape {
       .flat();
     this.createArrayBuffer(program, points, constants.pointSize);
 
-    gl.lineWidth(6);
-
     if (!assignId) {
       this.applyColor(program, constants.selectedPointColor);
     }
@@ -197,6 +195,7 @@ export abstract class Shape {
       ++len;
     }
     gl.drawArrays(gl.LINE_LOOP, 0, len);
+    gl.lineWidth(1);
   }
 
   setDrawingPoint(p: Point | null) {
