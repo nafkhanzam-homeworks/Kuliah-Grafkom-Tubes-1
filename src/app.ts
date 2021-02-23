@@ -186,7 +186,9 @@ export class App {
       }
     }
 
-    this.mouseState.shapeId = this.getPixelId(this.mouseState.pos);
+    if (!this.mouseState.pressed.pos) {
+      this.mouseState.shapeId = this.getPixelId(this.mouseState.pos);
+    }
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
@@ -232,13 +234,15 @@ export class App {
 
     const state = this.mouseState;
     const id = state.shapeId;
-    const dx = ((state.pos[0] - state.bef[0]) / this.canvas.width) * 2;
-    const dy = (-(state.pos[1] - state.bef[1]) / this.canvas.height) * 2;
+    let [dx, dy] = this.toScaledPoint([state.pos[0] - state.bef[0], state.pos[1] - state.bef[1]]);
+    dx += 1;
+    dy -= 1;
+    const [x, y] = this.toScaledPoint(newPos);
 
     if (this.status === "SELECT") {
       // Kalo dragging, panggil clickedShape on mouse move
       if (this.mouseState.pressed.pos) {
-        this.clickedShape?.onSelectedMouseMove(id, [dx, dy]);
+        this.clickedShape?.onSelectedMouseMove(id, [dx, dy], [x, y]);
       }
     } else if (this.drawingShape && this.mouseState.pressed.pos) {
       this.drawingShape.onDrawingMouseMove(this.mouseState);

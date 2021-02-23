@@ -69,6 +69,15 @@ export class Square extends Shape {
     ];
   }
 
+  private updateBy2Points(a: Point, b: Point) {
+    const size = Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]));
+    const x = Math.min(a[0], b[0]);
+    const y = Math.min(a[1], b[1]);
+    this.point = [x, y];
+    this.size = size;
+    this.updatePoints();
+  }
+
   getDataInstance(): ShapeInstance {
     return {
       type: "square",
@@ -93,14 +102,16 @@ export class Square extends Shape {
 
   onDrawingApplyPressed(): void {}
 
-  onSelectedMouseMove(id: number, [dx, dy]: [number, number]): void {
+  onSelectedMouseMove(id: number, [dx, dy]: [number, number], [x, y]: Point): void {
     if (id === this.id) {
       this.point[0] += dx;
       this.point[1] += dy;
       this.updatePoints();
     } else {
       const i = this.points.findIndex((v) => v.id === id);
-      // TODO
+      if (i >= 0 && i < this.points.length) {
+        this.updateBy2Points([x, y], this.points[(i + 2) % 4].point);
+      }
     }
   }
 

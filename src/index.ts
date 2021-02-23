@@ -24,14 +24,14 @@ polygon.addPoint([0.75, -1]);
 polygon.addPoint([0.5, 0.5]);
 polygon.addPoint([-1, -0.75]);
 polygon.addPoint([-0.75, 1]);
-app.addShape(polygon);
+// app.addShape(polygon);
 
 const line = new Line(canvas, gl, [0, 1, 0]);
-line.addPoint([1, -0.75]);
+line.addPoint([0, -0.75]);
 line.addPoint([-1, 0.75]);
-app.addShape(line);
+// app.addShape(line);
 
-const square = new Square([0, -1], 0.5, canvas, gl, [0, 0, 1]);
+const square = new Square([0, 0], 0.5, canvas, gl, [1, 0, 1]);
 app.addShape(square);
 
 // COLOR
