@@ -13,10 +13,12 @@ class ColorManager {
   ) {
     const rgbInputs = [colorRElmt, colorGElmt, colorBElmt];
     rgbInputs.forEach((rgbInput) => {
-      rgbInput.addEventListener("change", (event: Event) => {
+      rgbInput.value = "0";
+      rgbInput.addEventListener("input", (event: Event) => {
         rgbSetBtn.style.backgroundColor = `rgb(${colorRElmt.value}, ${colorGElmt.value}, ${colorBElmt.value})`;
       });
     });
+    rgbSetBtn.style.backgroundColor = `rgb(${colorRElmt.value}, ${colorGElmt.value}, ${colorBElmt.value})`;
     rgbSetBtn.addEventListener("click", () => {
       const color: Color = [
         this.mapColor(colorRElmt.value),
