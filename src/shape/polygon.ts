@@ -66,15 +66,39 @@ export class Polygon extends Shape {
   }
 
   onDrawingApplyPressed(state: MouseState) {
-    super.onDrawingApplyPressed(state);
     const pos = this.drawingPoint || state.pos;
     this.addPoint(pos);
   }
 
-  getDataInstance(): PolygonInstance {
+  onSelectedMouseMove(id: number, [dx, dy]: [number, number]) {
+    if (id === this.id) {
+      for (let i = 0; i < this.points.length; ++i) {
+        this.points[i].point[0] += dx;
+        this.points[i].point[1] += dy;
+      }
+    } else {
+      const i = this.points.findIndex((v) => v.id === id);
+      if (i >= 0 && i < this.points.length) {
+        this.updatePoint(i, [this.points[i].point[0] + dx, this.points[i].point[1] + dy]);
+      }
+    }
+  }
+
+  onDrawingMouseUp() {
+    if (this.drawingPoint) {
+      this.addPoint(this.drawingPoint);
+      this.setDrawingPoint(null);
+    }
+    return this.points.length > 2;
+  }
+
+  getDataInstance(): ShapeInstance {
     return {
-      color: this.color,
-      points: this.points.map((v) => v.point),
+      type: "polygon",
+      object: {
+        color: this.color,
+        points: this.points.map((v) => v.point),
+      },
     };
   }
 }

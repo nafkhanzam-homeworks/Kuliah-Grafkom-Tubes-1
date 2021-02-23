@@ -68,7 +68,7 @@ export abstract class Shape {
   renderHitbox(hitboxProgram: WebGLProgram, selected: boolean) {
     if (selected) {
       this.renderPoints(hitboxProgram, true);
-      this.renderSelected(hitboxProgram);
+      this.renderSelected(hitboxProgram, true);
     }
     this.renderHitboxShape(hitboxProgram);
   }
@@ -178,7 +178,7 @@ export abstract class Shape {
     }
   }
 
-  protected renderSelected(program: WebGLProgram) {
+  protected renderSelected(program: WebGLProgram, assignId: boolean = false) {
     const {gl} = this;
 
     const points = this.flatPoints(true);
@@ -186,7 +186,11 @@ export abstract class Shape {
 
     gl.lineWidth(6);
 
-    this.applyColor(program, constants.selectedColor);
+    if (assignId) {
+      this.assignDataId(this.id, program);
+    } else {
+      this.applyColor(program, constants.selectedColor);
+    }
 
     let len = this.points.length;
     if (this.drawingPoint) {
@@ -223,22 +227,7 @@ export abstract class Shape {
     return this.id;
   }
 
-  onSelectedMouseMove(state: MouseState) {
-    const id = state.shapeId;
-    const dx = ((state.pos[0] - state.bef[0]) / this.canvas.width) * 2;
-    const dy = (-(state.pos[1] - state.bef[1]) / this.canvas.height) * 2;
-    if (id === this.id) {
-      for (let i = 0; i < this.points.length; ++i) {
-        this.points[i].point[0] += dx;
-        this.points[i].point[1] += dy;
-      }
-    } else {
-      const i = this.points.findIndex((v) => v.id === id);
-      if (i >= 0 && i < this.points.length) {
-        this.updatePoint(i, [this.points[i].point[0] + dx, this.points[i].point[1] + dy]);
-      }
-    }
-  }
+  abstract onSelectedMouseMove(id: number, delta: [number, number]): void;
 
   toScaledPoint(point: Point): Point {
     const x = (point[0] / this.canvas.width) * 2 - 1;
@@ -246,16 +235,13 @@ export abstract class Shape {
     return [x, -y];
   }
 
-  onDrawingMouseUp(state: MouseState, pos: Point): boolean {
-    if (this.drawingPoint) {
-      this.setDrawingPoint(null);
-    }
-    return this.points.length > 2;
-  }
+  abstract onDrawingMouseUp(state: MouseState, pos: Point): boolean;
 
   onDrawingMouseMove(state: MouseState) {
     this.setDrawingPoint(this.toScaledPoint(state.pos));
   }
 
-  onDrawingApplyPressed(state: MouseState) {}
+  abstract onDrawingApplyPressed(state: MouseState): void;
+
+  abstract getDataInstance(): ShapeInstance;
 }

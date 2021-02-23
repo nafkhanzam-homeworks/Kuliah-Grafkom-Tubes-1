@@ -37,17 +37,33 @@ export class Line extends Shape {
     return this.points.map((point) => point.point).flat();
   }
 
-  onDrawingApplyPressed(state: MouseState) {
-    super.onDrawingApplyPressed(state);
-    const pos = this.drawingPoint || state.pos;
-    this.addPoint(pos);
+  getDataInstance(): ShapeInstance {
+    return {
+      type: "line",
+      object: {
+        color: this.color,
+        p0: this.points[0].point,
+        p1: this.points[1].point,
+      },
+    };
   }
 
-  getDataInstance(): LineInstance {
-    return {
-      color: this.color,
-      p0: this.points[0].point,
-      p1: this.points[1].point,
-    };
+  onDrawingApplyPressed() {}
+
+  onSelectedMouseMove(id: number, [dx, dy]: [number, number]): void {
+    if (id === this.id) {
+      for (let i = 0; i < this.points.length; ++i) {
+        this.updatePoint(i, [this.points[i].point[0] + dx, this.points[i].point[1] + dy]);
+      }
+    } else {
+      const i = this.points.findIndex((v) => v.id === id);
+      if (i >= 0 && i < this.points.length) {
+        this.updatePoint(i, [this.points[i].point[0] + dx, this.points[i].point[1] + dy]);
+      }
+    }
+  }
+
+  onDrawingMouseUp(state: MouseState, pos: Point): boolean {
+    throw new Error("Method not implemented.");
   }
 }

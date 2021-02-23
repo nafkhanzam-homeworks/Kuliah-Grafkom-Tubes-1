@@ -230,10 +230,15 @@ export class App {
     this.mouseState.bef = this.mouseState.pos;
     this.mouseState.pos = newPos;
 
+    const state = this.mouseState;
+    const id = state.shapeId;
+    const dx = ((state.pos[0] - state.bef[0]) / this.canvas.width) * 2;
+    const dy = (-(state.pos[1] - state.bef[1]) / this.canvas.height) * 2;
+
     if (this.status === "SELECT") {
       // Kalo dragging, panggil clickedShape on mouse move
       if (this.mouseState.pressed.pos) {
-        this.clickedShape?.onSelectedMouseMove(this.mouseState);
+        this.clickedShape?.onSelectedMouseMove(id, [dx, dy]);
       }
     } else if (this.drawingShape && this.mouseState.pressed.pos) {
       this.drawingShape.onDrawingMouseMove(this.mouseState);
@@ -287,42 +292,17 @@ export class App {
         return new Polygon(this.canvas, this.gl, randColor());
       case "LINE":
         return new Line(this.canvas, this.gl, randColor());
+      case "SQUARE":
+        return new Square(this.mouseState.pos, 0, this.canvas, this.gl, randColor());
     }
     return null;
   }
 
   getDataInstance(): AppInstance {
     return {
-      shapes: this.shapes.map((shape) => {
-        const res = mapToTypeInstance(shape);
-        if (!res) {
-          throw new Error("Can't identify shape type!");
-        }
-        return res;
-      }),
+      shapes: this.shapes.map((v) => v.getDataInstance()),
     };
   }
 }
-
-const mapToTypeInstance = (shape: Shape): ShapeInstance | null => {
-  if (shape instanceof Polygon) {
-    return {
-      type: "polygon",
-      object: shape.getDataInstance(),
-    };
-  } else if (shape instanceof Line) {
-    return {
-      type: "line",
-      object: shape.getDataInstance(),
-    };
-  } else if (shape instanceof Square) {
-    return {
-      type: "square",
-      object: shape.getDataInstance(),
-    };
-  }
-
-  return null;
-};
 
 const randColor = (): Color => [Math.random(), Math.random(), Math.random()];

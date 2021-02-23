@@ -69,11 +69,14 @@ export class Square extends Shape {
     ];
   }
 
-  getDataInstance(): SquareInstance {
+  getDataInstance(): ShapeInstance {
     return {
-      color: this.color,
-      size: this.size,
-      p: this.point,
+      type: "square",
+      object: {
+        color: this.color,
+        size: this.size,
+        p: this.point,
+      },
     };
   }
 }
