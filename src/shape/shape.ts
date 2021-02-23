@@ -79,8 +79,8 @@ export abstract class Shape {
 
     gl.useProgram(program);
     if (selected) {
-      this.renderPoints(program);
-      this.renderSelected(program);
+      this.renderPoints(program, false);
+      this.renderSelected(program, false);
     }
     this.renderShape();
   }
@@ -129,7 +129,7 @@ export abstract class Shape {
     return arr.flat();
   }
 
-  protected renderPoints(program: WebGLProgram, assignId: boolean = false) {
+  protected renderPoints(program: WebGLProgram, assignId: boolean) {
     const {gl} = this;
 
     const size = 0.02;
@@ -178,7 +178,7 @@ export abstract class Shape {
     }
   }
 
-  protected renderSelected(program: WebGLProgram, assignId: boolean = false) {
+  protected renderSelected(program: WebGLProgram, assignId: boolean) {
     const {gl} = this;
 
     const points = this.flatPoints(true);

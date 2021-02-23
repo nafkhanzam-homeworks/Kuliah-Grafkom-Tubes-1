@@ -34,7 +34,11 @@ export class Line extends Shape {
   }
 
   getFlatPoints(): number[] {
-    return this.points.map((point) => point.point).flat();
+    const res = this.points.map((point) => point.point);
+    if (this.drawingPoint) {
+      res.push(this.drawingPoint);
+    }
+    return res.flat();
   }
 
   getDataInstance(): ShapeInstance {
@@ -64,6 +68,11 @@ export class Line extends Shape {
   }
 
   onDrawingMouseUp(state: MouseState, pos: Point): boolean {
-    throw new Error("Method not implemented.");
+    if (this.drawingPoint) {
+      this.addPoint(this.drawingPoint);
+      this.setDrawingPoint(null);
+      return true;
+    }
+    return false;
   }
 }
