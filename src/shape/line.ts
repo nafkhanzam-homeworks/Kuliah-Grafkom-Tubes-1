@@ -79,4 +79,9 @@ export class Line extends Shape {
     }
     return false;
   }
+
+  onDrawingMouseDown(pos: Point) {
+    this.addPoint(this.toScaledPoint(pos));
+    this.setDrawingPoint(this.toScaledPoint(pos));
+  }
 }

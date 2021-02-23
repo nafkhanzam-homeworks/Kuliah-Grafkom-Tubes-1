@@ -101,6 +101,11 @@ export class Polygon extends Shape {
       },
     };
   }
+
+  onDrawingMouseDown(pos: Point) {
+    this.addPoint(this.toScaledPoint(pos));
+    this.setDrawingPoint(this.toScaledPoint(pos));
+  }
 }
 
 const orientation = (p: Point, q: Point, r: Point) => {

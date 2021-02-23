@@ -122,4 +122,13 @@ export class Square extends Shape {
     }
     return false;
   }
+
+  onDrawingMouseMove(state: MouseState) {
+    super.onDrawingMouseMove(state);
+    this.drawingPoint && this.updateBy2Points(this.point, this.drawingPoint);
+  }
+
+  onDrawingMouseDown(pos: Point) {
+    this.updateBy2Points(pos, pos);
+  }
 }

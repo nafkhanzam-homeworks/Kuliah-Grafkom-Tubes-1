@@ -243,4 +243,6 @@ export abstract class Shape {
   abstract onDrawingApplyPressed(state: MouseState): void;
 
   abstract getDataInstance(): ShapeInstance;
+
+  abstract onDrawingMouseDown(pos: Point): void;
 }

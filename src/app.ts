@@ -259,8 +259,7 @@ export class App {
       this.colorManager?.removeSelectedShape();
       this.drawingShape = this.mapToShape(this.status);
       if (this.drawingShape) {
-        this.drawingShape.addPoint(this.toScaledPoint(pos));
-        this.drawingShape.setDrawingPoint(this.toScaledPoint(pos));
+        this.drawingShape.onDrawingMouseDown(pos);
       }
     }
   }
