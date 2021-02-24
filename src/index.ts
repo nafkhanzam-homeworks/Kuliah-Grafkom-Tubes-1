@@ -15,7 +15,7 @@ if (!gl) {
 const bgColor: Color = [1, 1, 1];
 const size = [720, 720] as const;
 
-const newApp = () => new App(canvas, gl, ...size, bgColor);
+const newApp = () => new App(canvas, gl, ...size, bgColor, appColorManager);
 let app = newApp();
 
 const polygon = new Polygon(canvas, gl, [1, 0, 0]);
@@ -46,8 +46,6 @@ const appColorManager: ColorManager = new ColorManager(
   colorBElmt,
   rgbSetBtn,
 );
-
-app.setColorManager(appColorManager);
 
 const selectBtn = document.getElementById("select") as HTMLButtonElement;
 const lineBtn = document.getElementById("line") as HTMLButtonElement;

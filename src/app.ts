@@ -21,7 +21,6 @@ export class App {
   private frameBuf: WebGLFramebuffer;
   private clickedShape: Shape | null = null;
   private drawingShape: Shape | null = null;
-  private colorManager?: ColorManager;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -29,6 +28,7 @@ export class App {
     width: number,
     height: number,
     private backgroundColor: Color,
+    private colorManager: ColorManager,
   ) {
     canvas.width = width;
     canvas.height = height;
