@@ -32,7 +32,7 @@ line.addPoint([-1, 0.75]);
 // app.addShape(line);
 
 const square = new Square([0, 0], 0.5, canvas, gl, [1, 0, 1]);
-app.addShape(square);
+// app.addShape(square);
 
 // COLOR
 const colorRElmt = document.getElementById("color-r") as HTMLInputElement;
