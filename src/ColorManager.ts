@@ -16,6 +16,13 @@ class ColorManager {
       rgbInput.value = "0";
       rgbInput.addEventListener("input", (event: Event) => {
         rgbSetBtn.style.backgroundColor = `rgb(${colorRElmt.value}, ${colorGElmt.value}, ${colorBElmt.value})`;
+        const values: number[] = rgbInputs.map((el) => Number.parseInt(el.value));
+        const rgbtotal = values.reduce((acc, curr) => acc + curr);
+        if (rgbtotal < 383) {
+          rgbSetBtn.style.color = "white";
+        } else {
+          rgbSetBtn.style.color = "black";
+        }
       });
     });
     rgbSetBtn.style.backgroundColor = `rgb(${colorRElmt.value}, ${colorGElmt.value}, ${colorBElmt.value})`;

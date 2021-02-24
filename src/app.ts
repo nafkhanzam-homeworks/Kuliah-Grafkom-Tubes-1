@@ -46,6 +46,9 @@ export class App {
       if (e.key === "Enter") {
         this.onApplyPressed(this.mouseState);
       }
+      if (e.key === "x") {
+        this.onDeletePressed(this.mouseState);
+      }
     };
 
     const hitboxProgram = gl.createProgram();
@@ -280,8 +283,23 @@ export class App {
     this.drawingShape?.onDrawingApplyPressed(state);
   }
 
+  private onDeletePressed(state: MouseState) {
+    if (this.status === "SELECT") {
+      if (!this.clickedShape) {
+        return;
+      }
+      this.deleteShape(this.clickedShape.getId());
+    }
+  }
+
   public addShape(shape: Shape) {
     this.shapes.splice(0, 0, shape);
+  }
+
+  public deleteShape(id?: number) {
+    this.shapes = this.shapes.filter((shape) => {
+      return shape.getId() != id;
+    });
   }
 
   toScaledPoint(point: Point): Point {
